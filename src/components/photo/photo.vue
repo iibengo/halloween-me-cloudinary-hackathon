@@ -67,6 +67,7 @@ import "two-up-element";
 import "../../styles/global.css";
 import { Facebook, Twitter, Instagram } from "lucide-vue-next";
 
+
 // Obtener el ID de la URL
 const { searchParams } = new URL(window.location.href);
 const id = searchParams.get("id");
@@ -84,25 +85,63 @@ const funnyPhrases: string[] = [
   "Los vampiros me dijeron que me veían pálido… ¡Y eso que ya no salgo!",
   "Cazando fantasmas… pero primero, un café.",
 ];
+const splitText = (text:string, maxLength = 35) => {
+  const lines = []; // Array para almacenar las líneas
+  let currentLine = ""; // Línea actual en construcción
 
+  // Separar el texto en palabras
+  const words = text.split(" ");
+
+  for (const word of words) {
+    // Verificar si añadir la nueva palabra excedería el límite
+    if (currentLine.length + word.length + 1 <= maxLength) {
+      currentLine += (currentLine ? " " : "") + word; // Añadir palabra a la línea actual
+    } else {
+      // Si se excede el límite, almacenar la línea actual y comenzar una nueva
+      lines.push(currentLine);
+      currentLine = word; // Comenzar una nueva línea con la palabra actual
+    }
+  }
+
+  // Añadir la última línea si hay contenido
+  if (currentLine) {
+    lines.push(currentLine);
+  }
+
+  return lines; // Devolver todas las líneas
+};
+
+
+const createOverlay = (text:string, yOffset:number, fontSize:number) => {
+  console.log(yOffset)
+  return {
+    text: {
+      text, // Texto a mostrar
+      fontFamily: "Impact", // Tipo de fuente
+      fontSize, // Tamaño de la fuente
+      color: "#FFFFFF", // Color del texto,
+      lineSpacing:100,
+      letterSpacing:3
+    },
+    position: {
+      gravity: "south", // Posición (parte inferior)
+      x: 0, // Desplazamiento horizontal
+      y: yOffset, // Desplazamiento vertical
+    },
+  };
+};
 const randomColors: string[] = ["white", "orange", "red", "black"];
 const getRandomString = (strings: string[]): string => {
   const randomIndex = Math.floor(Math.random() * strings.length);
   return strings[randomIndex];
 };
-
 const selectedConfigParams = {
   blackwhite: getRandomString(randomColors) % 2 === 1,
   blurface: getRandomString(randomColors) % 2 === 1,
   cartoonify: getRandomString(randomColors) % 2 === 1,
-  overlay: {
-    text: {
-      border: getRandomString(randomColors),
-      color: getRandomString(randomColors),
-      fontFamily: "impact",
-      fontSize: "22",
-      text: getRandomString(funnyPhrases),
-    },
+  overlay: () => {
+    const lines = splitText(getRandomString(funnyPhrases));
+    return lines.map((line, index) => createOverlay(line, (lines.length - index - 1) * 120 + 30, 120)); 
   },
 };
 
@@ -116,28 +155,17 @@ const topics = {
 const topicList = [
   "Add scary ghosts to the background",
   "Add zombies to the background",
-  "Add hello kitties to the background",
+  "Add jungle to the background",
 ];
 
 // Manejar clics en los botones
-const handleClick = () => {
+const handleClick = async () => {
+ // console.log(await getImageDetails(id || ""))
   const newUrl = getCldImageUrl({
     src: id || "",
-    replaceBackground: topicList[2],
-   
-       overlay: {
-      text: {
-        text: "hola", // El texto que quieres añadir
-        color: "#FFFFFF", // Color del texto
-        fontFamily: "Arial", // Fuente del texto
-        fontSize: 50, // Tamaño de fuente
-      },
-      position: { gravity: "south_east", x: 20, y: 30 }, // Posición del texto
-    },
+    replaceBackground: topicList[1],
+    overlays: selectedConfigParams.overlay()
   });
-  //https://res.cloudinary.com/dzw66be0y/image/upload/e_gen_background_replace:prompt_Add%20hello%20kitties%20to%20the%20background/
-  //g_south_east,l_text:Arial_50:hola%20que%20ase,x_20,y_30/gk0o5warwe2ylieb6zx2
-  console.log(newUrl);
   previewOpacity.value = 0.3; // Disminuir opacidad durante la carga
   previewUrl.value = newUrl;
 

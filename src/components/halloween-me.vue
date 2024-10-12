@@ -39,7 +39,6 @@
   <script setup>
   import { ref } from 'vue';
   import { Facebook, Twitter, Instagram } from 'lucide-vue-next';
-  import { useHead } from '@unhead/vue'
 
   useHead({
   meta: [
