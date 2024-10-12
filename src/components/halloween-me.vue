@@ -39,7 +39,16 @@
   <script setup>
   import { ref } from 'vue';
   import { Facebook, Twitter, Instagram } from 'lucide-vue-next';
-  
+  import { useHead } from '@unhead/vue'
+
+  useHead({
+  meta: [
+    {
+      name: 'viewport',
+      content: 'width=device-width, initial-scale=1.0',
+    }
+  ]
+})
   const imageUrl = ref('/placeholder.svg?height=400&width=400');
   const isHalloweenified = ref(false);
   

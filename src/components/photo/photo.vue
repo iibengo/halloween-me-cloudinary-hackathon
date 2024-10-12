@@ -1,52 +1,63 @@
 <template>
-  <main
-    :data-id="id"
-    class="min-h-screen flex flex-col justify-center items-center bg-gray-900 text-gray-200 text-center py-8"
-  >
-    <header>
-      <h1 class="text-8xl md:text-4xl font-extrabold text-orange-500 mb-6">
-        Selecciona el tema
-      </h1>
+  <div class="min-h-screen bg-orange-900 flex items-center justify-center p-4">
+    <div class="w-full max-w-md  bg-black rounded-lg shadow-2xl ">
+     <div class="p-6 space-y-6">
+        <h1 class="text-3xl font-extrabold text-orange-500 text-center">Selecciona el tema</h1>
+        
+        <!-- Botones de temas -->
+        <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 my-4">
+          <button 
+           @click="handleClick(key)"
+            class="w-full py-3 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50"
+          >
+            HALLOWEEN ME
+          </button>
+  
+        
+        </div>
 
-      <!-- Botones de temas -->
-      <div
-        class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 my-4"
-      >
-        <button
-          v-for="(topic, key) in topics"
-          :key="key"
-          class="add text-6xl md:text-2xl bg-gray-800 text-orange-500 py-3 px-6 rounded-lg shadow-lg transition-transform transform hover:scale-105 hover:bg-orange-600 hover:text-white"
-          @click="handleClick(key)"
-          :data-topic="key"
-        >
-          {{ topic.label }}
-        </button>
+        <!-- Contenedor de imágenes -->
+        <div class="relative aspect-square w-full max-w-md overflow-hidden rounded-lg border-4 border-orange-500">
+          <two-up>
+            <img id="original" :src="url" class="object-cover w-full h-full" />
+            <img id="preview" :src="previewUrl" :style="{ opacity: previewOpacity }" class="object-cover w-full h-full" />
+          </two-up>
+        </div>
+        <small class="block text-sm text-gray-400 my-2">{{ url }}</small>
+
+        <!-- Botón de descarga -->
+        <div class="mt-4">
+          <button
+            class="bg-orange-500 text-white py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out hover:bg-orange-600"
+            @click="handleDownload"
+          >
+            Descargar en Avif
+          </button>
+        </div>
+
+        <!-- Botones para compartir en redes sociales -->
+        <div class="flex justify-center space-x-4 mt-6">
+          <button 
+            v-for="network in socialNetworks" 
+            :key="network.name"
+            @click="sharePhoto(network.name)"
+            class="p-2 bg-gray-800 hover:bg-gray-700 rounded-full transition duration-300 ease-in-out transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50"
+          >
+            <component :is="network.icon" class="w-6 h-6 text-orange-500" />
+          </button>
+        </div>
       </div>
-    </header>
-
-    <!-- Imágenes -->
-    <two-up>
-      <img id="original" :src="url" />
-      <img id="preview" :src="previewUrl" />
-    </two-up>
-    <small class="block text-sm text-gray-400 my-2">{{ url }}</small>
-
-    <!-- Botón de descarga -->
-    <div class="mt-4">
-      <button
-        class="download bg-orange-500 text-white py-3 px-6 rounded-lg shadow-lg transition duration-300 hover:bg-orange-600"
-        @click="handleDownload"
-      >
-        Descargar en Avif
-      </button>
     </div>
-  </main>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue";
 import { getCldImageUrl } from "astro-cloudinary/helpers";
 import "two-up-element";
+import '../../styles/global.css';
+
+import { Facebook, Twitter, Instagram } from 'lucide-vue-next';
 
 // Obtener el ID de la URL
 const { searchParams } = new URL(window.location.href);
@@ -86,30 +97,33 @@ const selectedConfigParams = {
     },
   },
 };
+
 // Temas para los botones
 const topics = {
   ghost: { label: "Add scary ghosts to the background" },
   zombies: { label: "Add zombies to the background" },
   devil: { label: "Add hello kitties to the background" },
 };
+// Temas para los botones
+const topicList = [
+  "Add scary ghosts to the background",
+  "Add zombies to the background",
+ "Add hello kitties to the background" ,
+];
 
 // Manejar clics en los botones
-const handleClick = (topic) => {
-  console.log(previewUrl);
+const handleClick = () => {
   const newUrl = getCldImageUrl({
     src: id,
-    replaceBackground: topics[topic].label,
-    //cartoonify: false,
-    //overlay: { text: { ...selectedConfigParams.overlay.text } },
+    replaceBackground: topicList[2],
   });
+  console.log(newUrl)
   previewOpacity.value = 0.3; // Disminuir opacidad durante la carga
   previewUrl.value = newUrl;
 
   const img = new Image();
   img.src = newUrl;
-  console.log("before loaded ", newUrl);
   img.onload = () => {
-    console.log("loaded", newUrl);
     previewOpacity.value = 1; // Restaurar opacidad
   };
 };
@@ -122,6 +136,17 @@ const handleDownload = () => {
   a.href = downloadUrl;
   a.download = "image.avif";
   a.click();
+};
+
+// Redes sociales
+const socialNetworks = [
+  { name: 'Facebook', icon: Facebook },
+  { name: 'Twitter', icon: Twitter },
+  { name: 'Instagram', icon: Instagram },
+];
+
+const sharePhoto = (network) => {
+  console.log(`Compartiendo en ${network}`);
 };
 </script>
 
