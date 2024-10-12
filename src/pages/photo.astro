@@ -1,16 +1,11 @@
 ---
-// Importa tu componente Vue
-import PhotoView from '../components/photo/photo.vue';
-
-import HalloweenMe from '../components/halloween-me.vue';
-// Puedes manejar los parámetros aquí si es necesario
+import PhotoView from "../components/photo/photo.vue";
 const { searchParams } = Astro.url;
 const id = searchParams.get("id");
 
 if (id == null) return Astro.redirect("/");
 ---
 
-      <div class="bg-gray-900"> 
-
-<HalloweenMe  client:only   />
-</label>
+<div class="bg-gray-900">
+  <PhotoView client:only />
+</div>
