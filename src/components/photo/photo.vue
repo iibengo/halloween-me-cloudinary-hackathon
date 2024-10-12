@@ -1,37 +1,35 @@
 <template>
-  <div class="min-h-screen bg-orange-900 flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-black rounded-lg shadow-2xl">
+  <div class="min-h-screen bg-orange-900 flex items-center justify-center p-4 ">
+    <div class="w-full md:max-w-4xl bg-black rounded-lg shadow-2xl  ">
       <div class="p-6 space-y-6">
-        <h1 class="text-3xl font-extrabold text-orange-500 text-center">
-          Selecciona el tema
-        </h1>
-
+        <h1 class="text-4xl md:text-5xl md:text-4xl lg:text-3xl font-extrabold text-orange-500 text-center">
+    Cloudinary Hackathon 
+</h1>
         <!-- Botones de temas -->
-        <div
-          class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 my-4"
-        >
-          <button
-            @click="handleClick(key)"
-            class="w-full py-3 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50"
-          >
-            HALLOWEEN ME
-          </button>
-        </div>
+        <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 my-4">
+    <button
+        @click="handleClick(key)"
+        class="py-3 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50"
+    >
+        HALLOWEEN ME
+    </button>
+</div>
+
 
         <!-- Contenedor de imágenes -->
-        <div
-          class="relative aspect-square w-full max-w-md overflow-hidden rounded-lg border-4 border-orange-500"
-        >
-          <two-up>
-            <img id="original" :src="url" class="object-cover w-full h-full" />
-            <img
-              id="preview"
-              :src="previewUrl"
-              :style="{ opacity: previewOpacity }"
-              class="object-cover w-full h-full"
-            />
-          </two-up>
-        </div>
+   <!-- Contenedor de imágenes -->
+<div class="relative inline-block overflow-hidden rounded-lg border-4 border-orange-500">
+    <two-up>
+        <img id="original" :src="url" class="object-cover w-full h-full" />
+        <img
+            id="preview"
+            :src="previewUrl"
+            :style="{ opacity: previewOpacity }"
+            class="object-cover w-full h-full"
+        />
+    </two-up>
+</div>
+
         <small class="block text-sm text-gray-400 my-2">{{ url }}</small>
 
         <!-- Botón de descarga -->
@@ -199,6 +197,7 @@ const sharePhoto = (network) => {
 </script>
 
 <style scoped>
+
 img {
   max-width: 100%;
   height: auto;

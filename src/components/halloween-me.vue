@@ -2,7 +2,7 @@
     <div class="min-h-screen bg-orange-900 flex items-center justify-center p-4">
       <div class="max-w-md w-full bg-black rounded-lg shadow-2xl overflow-hidden">
         <div class="p-6 space-y-6">
-          <h1 class="text-3xl font-extrabold text-orange-500 text-center">Halloween Photo App</h1>
+          <h1 class="text-3xl font-extrabold text-orange-500 text-center">Cloudinary Hackathon</h1>
           
           <button 
             @click="applyHalloweenFilter"

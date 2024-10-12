@@ -5,7 +5,8 @@ const id = searchParams.get("id");
 
 if (id == null) return Astro.redirect("/");
 ---
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
 <div class="bg-gray-900">
   <PhotoView client:only />
 </div>
