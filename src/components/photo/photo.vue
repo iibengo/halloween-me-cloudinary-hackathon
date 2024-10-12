@@ -1,6 +1,10 @@
 <template>
-  <div class="min-h-screen bg-orange-900 flex items-center justify-center p-4 ">
-    <div class="w-full md:max-w-4xl bg-black rounded-lg shadow-2xl  ">
+  <Loading v-if="!dataLoaded" />
+  <div 
+ 
+  class="min-h-screen  bg-orange-900 flex items-center justify-center p-4 m-b-8">
+    
+    <div class="w-full md:max-w-3xl bg-black rounded-lg shadow-2xl  p-b-12">
       <div class="p-6 space-y-6">
         <h1 class="text-4xl md:text-5xl md:text-4xl lg:text-3xl font-extrabold text-orange-500 text-center">
     Cloudinary Hackathon 
@@ -18,9 +22,9 @@
 
         <!-- Contenedor de imágenes -->
    <!-- Contenedor de imágenes -->
-<div class="relative inline-block overflow-hidden rounded-lg border-4 border-orange-500">
-    <two-up>
-        <img id="original" :src="url" class="object-cover w-full h-full" />
+   <div   class="relative inline-block overflow-hidden rounded-lg border-4 border-orange-500">
+    <two-up v-if="dataLoaded">
+        <img id="original" :src="urlOriginal" class="object-cover w-full h-full" />
         <img
             id="preview"
             :src="previewUrl"
@@ -28,12 +32,23 @@
             class="object-cover w-full h-full"
         />
     </two-up>
+    <two-up v-else>
+        <img id="original" :src=urlOriginal class="object-cover w-full h-full" />
+        <img
+            id="preview"
+            src=""
+            :style="{ opacity: previewOpacity }"
+            class="object-cover w-full h-full"
+        />
+    </two-up>
 </div>
+<small class="block text-sm text-gray-400 mt-1 max-w-xl overflow-x-auto whitespace-nowrap">
+  {{ urlOriginal }}
+</small>
 
-        <small class="block text-sm text-gray-400 my-2">{{ url }}</small>
 
         <!-- Botón de descarga -->
-        <div class="mt-4">
+        <div >
           <button
             class="bg-orange-500 text-white py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out hover:bg-orange-600"
             @click="handleDownload"
@@ -43,7 +58,7 @@
         </div>
 
         <!-- Botones para compartir en redes sociales -->
-        <div class="flex justify-center space-x-4 mt-6">
+        <div class="flex justify-center space-x-4 p-6">
           <button
             v-for="network in socialNetworks"
             :key="network.name"
@@ -59,22 +74,43 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref,onMounted } from "vue";
 import { getCldImageUrl } from "astro-cloudinary/helpers";
 import "two-up-element";
-import "../../styles/global.css";
 import { Facebook, Twitter, Instagram } from "lucide-vue-next";
-
-
+import Loading from '../ui/loading.vue'
+const loading=ref(true)
 // Obtener el ID de la URL
 const { searchParams } = new URL(window.location.href);
 const id = searchParams.get("id");
 
 if (id == null) window.location.href = "/"; // Redirigir si no hay ID
-
-const url = getCldImageUrl({ src: id });
-const previewUrl = ref(url);
+const urlOriginal=ref("")
+const dataLoaded=ref(false)
+const previewUrl = ref("");
 const previewOpacity = ref(1);
+const error = ref('');
+const getCldImageUrlPromise = ():Promise<string> => {
+  return new Promise((resolve, reject) => {
+    try {
+      const url = getCldImageUrl({ src: id || "" });
+      resolve(url);
+    } catch (error) {
+      resolve("url");
+    }
+  });
+};
+
+onMounted(async ()=>{
+  urlOriginal.value=  await getCldImageUrlPromise();
+  previewUrl.value=  urlOriginal.value;
+
+  const img = new Image();
+  img.src =  previewUrl.value;
+  img.onload=()=>{
+  dataLoaded.value=true; 
+  }
+})
 
 const funnyPhrases: string[] = [
   "Hoy no respondo… ¡solo acepto dulces o travesuras!",
@@ -111,7 +147,7 @@ const splitText = (text:string, maxLength = 35) => {
 
 
 const createOverlay = (text:string, yOffset:number, fontSize:number) => {
-  console.log(yOffset)
+ 
   return {
     text: {
       text, // Texto a mostrar
@@ -133,10 +169,16 @@ const getRandomString = (strings: string[]): string => {
   const randomIndex = Math.floor(Math.random() * strings.length);
   return strings[randomIndex];
 };
+
+// Temas para los botones
+const topicList = [
+  "Add scary ghosts to the background",
+  "Add zombies to the background",
+  "Add jungle to the background",
+];
+
 const selectedConfigParams = {
-  blackwhite: getRandomString(randomColors) % 2 === 1,
-  blurface: getRandomString(randomColors) % 2 === 1,
-  cartoonify: getRandomString(randomColors) % 2 === 1,
+  topic:getRandomString(topicList),
   overlay: () => {
     const lines = splitText(getRandomString(funnyPhrases));
     return lines.map((line, index) => createOverlay(line, (lines.length - index - 1) * 120 + 30, 120)); 
@@ -149,16 +191,9 @@ const topics = {
   zombies: { label: "Add zombies to the background" },
   devil: { label: "Add hello kitties to the background" },
 };
-// Temas para los botones
-const topicList = [
-  "Add scary ghosts to the background",
-  "Add zombies to the background",
-  "Add jungle to the background",
-];
-
 // Manejar clics en los botones
 const handleClick = async () => {
- // console.log(await getImageDetails(id || ""))
+  dataLoaded.value=false; 
   const newUrl = getCldImageUrl({
     src: id || "",
     replaceBackground: topicList[1],
@@ -170,6 +205,7 @@ const handleClick = async () => {
   const img = new Image();
   img.src = newUrl;
   img.onload = () => {
+    dataLoaded.value=true; 
     previewOpacity.value = 1; // Restaurar opacidad
   };
 };
@@ -191,8 +227,7 @@ const socialNetworks = [
   { name: "Instagram", icon: Instagram },
 ];
 
-const sharePhoto = (network) => {
-  console.log(`Compartiendo en ${network}`);
+const sharePhoto = (network) => {;
 };
 </script>
 
