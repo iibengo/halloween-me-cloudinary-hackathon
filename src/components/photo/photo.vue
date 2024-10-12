@@ -36,7 +36,7 @@
         <img id="original" :src=urlOriginal class="object-cover w-full h-full" />
         <img
             id="preview"
-            src=""
+            :src=urlOriginal 
             :style="{ opacity: previewOpacity }"
             class="object-cover w-full h-full"
         />
@@ -90,19 +90,9 @@ const dataLoaded=ref(false)
 const previewUrl = ref("");
 const previewOpacity = ref(1);
 const error = ref('');
-const getCldImageUrlPromise = ():Promise<string> => {
-  return new Promise((resolve, reject) => {
-    try {
-      const url = getCldImageUrl({ src: id || "" });
-      resolve(url);
-    } catch (error) {
-      resolve("url");
-    }
-  });
-};
 
 onMounted(async ()=>{
-  urlOriginal.value=  await getCldImageUrlPromise();
+  urlOriginal.value=  await getCldImageUrl({ src: id || "" });
   previewUrl.value=  urlOriginal.value;
 
   const img = new Image();
@@ -185,12 +175,6 @@ const selectedConfigParams = {
   },
 };
 
-// Temas para los botones
-const topics = {
-  ghost: { label: "Add scary ghosts to the background" },
-  zombies: { label: "Add zombies to the background" },
-  devil: { label: "Add hello kitties to the background" },
-};
 // Manejar clics en los botones
 const handleClick = async () => {
   dataLoaded.value=false; 
