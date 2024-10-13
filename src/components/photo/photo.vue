@@ -18,7 +18,13 @@
             @click="onHalloweenMeClick"
             class="py-3 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50"
           >
-            Generar
+            HALLOWEEN ME
+          </button>
+          <button
+            @click="onNewClick"
+            class="py-3 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50"
+          >
+            NUEVO
           </button>
         </div>
 
@@ -55,7 +61,7 @@
 
         <div v-if="isGenerated">
           <!-- Botón de descarga -->
-          <div>
+          <div v-if="false">
             <button
               class="bg-orange-500 text-white py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out hover:bg-orange-600"
               @click="handleDownload"
@@ -94,7 +100,7 @@ import "two-up-element";
 import Loading from "../ui/loading.vue";
 import axios from "axios";
 import { funnyPhrases } from "../../data";
-
+import { navigate } from "astro:transitions/client"
 const loading = ref(true);
 // Obtener el ID de la URL
 const { searchParams } = new URL(window.location.href);
@@ -110,13 +116,14 @@ const previewOpacity = ref(1);
 const error = ref("");
 
 onMounted(async () => {
-  urlOriginal.value = await getCldImageUrl({ src: id || "" });
+  urlOriginal.value =  getCldImageUrl({ src: id || "" });
   previewUrl.value = urlOriginal.value;
 
   const img = new Image();
   img.src = previewUrl.value;
-  img.onload = () => {
+  img.onload = async () => {
     dataLoaded.value = true;
+    await generateImg()
   };
 });
 
@@ -199,12 +206,16 @@ async function getImageDimensions(publicId: string) {
   }
 } // Manejar clics en los botones
 const onHalloweenMeClick = async () => {
-  isGenerated.value=false
+  
   await generateImg();
-  isGenerated.value=true
+ 
 };
-
+const onNewClick = async () => {
+  navigate(`/`)
+ 
+};
 const generateImg = async (retryCount = 0) => {
+  isGenerated.value=false
   const { width, height } = await getImageDimensions(id || "");
   dataLoaded.value = false;
 
@@ -243,6 +254,7 @@ const generateImg = async (retryCount = 0) => {
       console.error("Error al cargar la imagen:", error);
     }
   };
+  isGenerated.value=true
 };
 
 // Función para descargar la imagen
