@@ -12,6 +12,12 @@
   "engines": {
     "node": "20.x"
   },
+
+"browser": {
+  "fs": false,
+  "path": false,
+  "os": false
+},
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "@astrojs/tailwind": "^5.1.2",
