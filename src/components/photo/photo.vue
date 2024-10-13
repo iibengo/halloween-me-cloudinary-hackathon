@@ -79,6 +79,7 @@ import { getCldImageUrl } from "astro-cloudinary/helpers";
 import "two-up-element";
 import { Facebook, Twitter, Instagram } from "lucide-vue-next";
 import Loading from '../ui/loading.vue'
+import axios from 'axios'
 const loading=ref(true)
 // Obtener el ID de la URL
 const { searchParams } = new URL(window.location.href);
@@ -102,38 +103,20 @@ onMounted(async ()=>{
   }
 })
 
-const funnyPhrases: string[] = [
-  "Hoy no respondo… ¡solo acepto dulces o travesuras!",
-  "¿Asustado? ¡Yo solo estoy en modo lunes con disfraz!",
-  "Me visto de fantasma para no tener que socializar. ¡Buh!",
-  "Los vampiros me dijeron que me veían pálido… ¡Y eso que ya no salgo!",
-  "Cazando fantasmas… pero primero, un café.",
-];
-const splitText = (text:string, maxLength = 35) => {
-  const lines = []; // Array para almacenar las líneas
-  let currentLine = ""; // Línea actual en construcción
+// Variables para las frases
+const funnyPhrases: string[][] = [
+  ["Esta noche, solo acepto", "dulces, no preguntas."],
+  ["¿Me asustas?", "¿o eres solo otro lunes?"],
+  ["El disfraz de fantasma", "es mi forma de escapar."],
+  ["Vampiros me dicen", "que no salgo lo suficiente."],
+  ["Cazando fantasmas", "pero primero, ¡un bocadillo!"],
+  ["Si ves a un zombi", "¡ofrécele un café!"],
+  ["Soy un monstruo", "¡pero aún tengo estilo!"],
+  ["Hoy es mi día de descanso", "de ser humano."],
+  ["Este Halloween", "es solo otro día de trabajo."],
+  ["¿Truco o trato?", "Yo solo quiero la pizza."],
+];  
 
-  // Separar el texto en palabras
-  const words = text.split(" ");
-
-  for (const word of words) {
-    // Verificar si añadir la nueva palabra excedería el límite
-    if (currentLine.length + word.length + 1 <= maxLength) {
-      currentLine += (currentLine ? " " : "") + word; // Añadir palabra a la línea actual
-    } else {
-      // Si se excede el límite, almacenar la línea actual y comenzar una nueva
-      lines.push(currentLine);
-      currentLine = word; // Comenzar una nueva línea con la palabra actual
-    }
-  }
-
-  // Añadir la última línea si hay contenido
-  if (currentLine) {
-    lines.push(currentLine);
-  }
-
-  return lines; // Devolver todas las líneas
-};
 
 
 const createOverlay = (text:string, yOffset:number, fontSize:number) => {
@@ -159,6 +142,14 @@ const getRandomString = (strings: string[]): string => {
   const randomIndex = Math.floor(Math.random() * strings.length);
   return strings[randomIndex];
 };
+const getRandomPhrase = (strings: string[][]): string[] => {
+  const randomIndex = Math.floor(Math.random() * strings.length);
+  return strings[randomIndex];
+};
+
+const selectedPhrase = getRandomPhrase(funnyPhrases);
+//const upperPhrase = ref(selectedPhrase[0]);
+//const lowerPhrase = ref(selectedPhrase[1]);
 
 // Temas para los botones
 const topicList = [
@@ -168,20 +159,58 @@ const topicList = [
 ];
 
 const selectedConfigParams = {
-  topic:getRandomString(topicList),
-  overlay: () => {
-    const lines = splitText(getRandomString(funnyPhrases));
-    return lines.map((line, index) => createOverlay(line, (lines.length - index - 1) * 120 + 30, 120)); 
+  topic: getRandomString(topicList),
+  overlay: (width:number,height:number) => {
+    // Seleccionar una frase aleatoria que ya está dividida en dos partes
+    const textHeightPercentage = 0.25; // 25% de la altura para cada texto
+    const availableHeightForText = height * textHeightPercentage;
+    
+    const fontSize = Math.min(width * 0.08, availableHeightForText); // Elige el menor entre 8% del ancho o el alto permitido
+
+    const [upperText, lowerText] = getRandomPhrase(funnyPhrases);
+    const upperYOffset = Math.round(height * 0.85); // Ajusta la posición del texto superior (75% de la altura)
+    const lowerYOffset = Math.round(height * 0.10); // Ajusta la posición del texto inferior (15% de la altura)
+   
+    // Crear el overlay para la frase superior
+    const upperOverlay = createOverlay(upperText, upperYOffset, fontSize); // Ajusta yOffset y fontSize según sea necesario
+
+    // Crear el overlay para la frase inferior
+    const lowerOverlay = createOverlay(lowerText, lowerYOffset, fontSize); // Ajusta yOffset y fontSize según sea necesario
+
+    // Retornar ambos overlays en un array
+    return [upperOverlay, lowerOverlay];
   },
 };
-
+async function getImageDimensions(publicId:string) {
+  try {
+    const cloudName =  import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const apiKey =  import.meta.env.PUBLIC_CLOUDINARY_API_KEY;
+    const apiSecret =  import.meta.env.CLOUDINARY_API_SECRET;
+    
+    // Llamar a la API de Cloudinary para obtener detalles del recurso
+    const response = await axios.get(
+     `https://res.cloudinary.com/${cloudName}/image/upload/fl_getinfo/${publicId}`,
+      {
+        auth: {
+          username: apiKey || "",
+          password: apiSecret || "", 
+        },
+      }
+    );
+    const { width, height } = response.data.input;
+    return { width, height };
+  } catch (error) {
+    console.error('Error al obtener las dimensiones de la imagen:', error);
+  }
+}
 // Manejar clics en los botones
 const handleClick = async () => {
+ const {width,height}=await getImageDimensions(id || "")
   dataLoaded.value=false; 
   const newUrl = getCldImageUrl({
     src: id || "",
-    replaceBackground: topicList[1],
-    overlays: selectedConfigParams.overlay()
+    replaceBackground: topicList[0],
+    overlays: selectedConfigParams.overlay(width,height)
   });
   previewOpacity.value = 0.3; // Disminuir opacidad durante la carga
   previewUrl.value = newUrl;

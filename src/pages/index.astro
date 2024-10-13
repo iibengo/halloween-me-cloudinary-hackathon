@@ -45,7 +45,7 @@ import '../styles/global.css';
         </CldUploadWidget>
         <ul class="grid grid-cols-2 gap-4 mt-6">
           {images.map((image) => (
-            <li key={image.data.public_id}>
+            <li>
               <a href={`/photo?id=${image.data.public_id}`}>
                 <CldImage
                   src={image.data.public_id}

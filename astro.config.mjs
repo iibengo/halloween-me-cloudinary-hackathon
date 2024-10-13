@@ -2,8 +2,9 @@
 import { defineConfig } from 'astro/config';
 import fulldev from 'fulldev-ui/integration'
 import vue from '@astrojs/vue';
-
 import tailwind from '@astrojs/tailwind';
+import vercel from '@astrojs/vercel/serverless';
+
 
 // https://astro.build/config
 export default defineConfig({
@@ -20,5 +21,7 @@ export default defineConfig({
         brand: '#f50'
       }
     }
-  }), vue(), tailwind()]
+  }), vue(), tailwind()],
+  adapter: vercel(), 
+
 });
