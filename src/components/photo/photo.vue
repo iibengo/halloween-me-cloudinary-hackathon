@@ -20,26 +20,20 @@
           >
             HALLOWEEN ME
           </button>
-          <button
-            @click="onNewClick"
-            class="py-3 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50"
-          >
-            NUEVO
-          </button>
         </div>
 
         <!-- Contenedor de imágenes -->
         <div
           class="relative inline-block overflow-hidden rounded-lg border-4 border-orange-500"
         >
-         
-          <img v-if="!isGenerated"
-              id="preview"
-              :src="previewUrl"
-              :style="{ opacity: previewOpacity }"
-              class="object-cover w-full h-full"
-            />
-            <two-up v-else>
+          <img
+            v-if="!isGenerated"
+            id="preview"
+            :src="previewUrl"
+            :style="{ opacity: previewOpacity }"
+            class="object-cover w-full h-full"
+          />
+          <two-up v-else>
             <img
               id="original"
               :src="urlOriginal"
@@ -53,11 +47,6 @@
             />
           </two-up>
         </div>
-        <small
-          class="block text-sm text-gray-400 mt-1 max-w-xl overflow-x-auto whitespace-nowrap"
-        >
-          {{ urlOriginal }}
-        </small>
 
         <div v-if="isGenerated">
           <!-- Botón de descarga -->
@@ -71,23 +60,40 @@
           </div>
 
           <!-- Botones para compartir en redes sociales -->
-          <div class="flex  space-x-4 p-6 text-left pl-1">
+          <div class="flex space-x-4  text-left pl-1">
             <h3
-          class="text-2xl md:text-2xl md:text-4xl  font-extrabold text-orange-500 text-center"
-        >
-          Compatir:
-        </h3>
+              class="text-2xl md:text-2xl md:text-4xl font-extrabold text-orange-500 text-center"
+            >
+              Compatir:
+            </h3>
             <button
               v-for="network in socialNetworks"
               :key="network.name"
               @click="sharePhoto(network.name)"
               class="p-2 bg-gray-800 hover:bg-gray-700 rounded-full transition duration-300 ease-in-out transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50"
             >
-            <i :class="network.icon" class="w-6 h-6 text-orange-500 text-2xl md:text-2xl md:text-4xl"></i> <!-- Icono de scroll -->
-           
+              <i
+                :class="network.icon"
+                class="w-6 h-6 text-orange-500 text-2xl md:text-2xl md:text-4xl"
+              ></i>
+              <!-- Icono de scroll -->
             </button>
           </div>
         </div>
+        <div class="flex mt-0 p-0">
+          <span class="text-orange-500">Imagen original: </span>
+          <small
+            class="ml-4 block text-sm text-gray-400 mt-1 max-w-sm overflow-x-auto whitespace-nowrap"
+          >
+            {{ urlOriginal }}
+          </small>
+        </div>
+        <button
+          @click="onNewClick"
+          class="text-sm py-3 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50"
+        >
+          IR AL INICIO
+        </button>
       </div>
     </div>
   </div>
@@ -100,7 +106,7 @@ import "two-up-element";
 import Loading from "../ui/loading.vue";
 import axios from "axios";
 import { funnyPhrases } from "../../data";
-import { navigate } from "astro:transitions/client"
+import { navigate } from "astro:transitions/client";
 const loading = ref(true);
 // Obtener el ID de la URL
 const { searchParams } = new URL(window.location.href);
@@ -116,14 +122,14 @@ const previewOpacity = ref(1);
 const error = ref("");
 
 onMounted(async () => {
-  urlOriginal.value =  getCldImageUrl({ src: id || "" });
+  urlOriginal.value = getCldImageUrl({ src: id || "" });
   previewUrl.value = urlOriginal.value;
 
   const img = new Image();
   img.src = previewUrl.value;
   img.onload = async () => {
     dataLoaded.value = true;
-    await generateImg()
+    await generateImg();
   };
 });
 
@@ -206,16 +212,13 @@ async function getImageDimensions(publicId: string) {
   }
 } // Manejar clics en los botones
 const onHalloweenMeClick = async () => {
-  
   await generateImg();
- 
 };
 const onNewClick = async () => {
-  navigate(`/`)
- 
+  navigate(`/`);
 };
 const generateImg = async (retryCount = 0) => {
-  isGenerated.value=false
+  isGenerated.value = false;
   const { width, height } = await getImageDimensions(id || "");
   dataLoaded.value = false;
 
@@ -254,7 +257,7 @@ const generateImg = async (retryCount = 0) => {
       console.error("Error al cargar la imagen:", error);
     }
   };
-  isGenerated.value=true
+  isGenerated.value = true;
 };
 
 // Función para descargar la imagen
@@ -265,20 +268,19 @@ const handleDownload = () => {
   a.href = downloadUrl;
   a.download = "image.avif";
   a.click();
-}; 
+};
 // Redes sociales
-const socialNetworks = [
-  { name: "Whatsapp", icon: "fa-brands fa-whatsapp" },
-];
+const socialNetworks = [{ name: "Whatsapp", icon: "fa-brands fa-whatsapp" }];
 const sharePhoto = (networkName: string) => {
   const imageUrl = previewUrl.value; // URL de la imagen generada
-  const textToShare = '¡Mira esta imagen que generé! Gracias a ' + "https://halloween-me.vercel.app"; // Texto a compartir
+  const textToShare =
+    "¡Mira esta imagen que generé! Gracias a " +
+    "https://halloween-me.vercel.app/photo?id="+id+""; // Texto a compartir
 
   // WhatsApp permite enviar mensajes que incluyen imágenes públicas
-  const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(textToShare + ' ' + imageUrl)}`;
-  window.open(shareUrl, '_blank'); // Abre la URL en una nueva pestaña
+  const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(textToShare + " " + imageUrl)}`;
+  window.open(shareUrl, "_blank"); // Abre la URL en una nueva pestaña
 };
-
 </script>
 
 <style scoped>
