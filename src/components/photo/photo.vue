@@ -8,7 +8,7 @@
         <h1
           class="text-4xl md:text-5xl md:text-4xl lg:text-3xl font-extrabold text-orange-500 text-center"
         >
-          Cloudinary Hackathon
+          Generador de imagenes Halloween
         </h1>
         <!-- Botones de temas -->
         <div
@@ -18,7 +18,7 @@
             @click="onHalloweenMeClick"
             class="py-3 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50"
           >
-            HALLOWEEN ME
+            Crear
           </button>
         </div>
 
@@ -26,7 +26,14 @@
         <div
           class="relative inline-block overflow-hidden rounded-lg border-4 border-orange-500"
         >
-          <two-up v-if="dataLoaded">
+         
+          <img v-if="!isGenerated"
+              id="preview"
+              :src="previewUrl"
+              :style="{ opacity: previewOpacity }"
+              class="object-cover w-full h-full"
+            />
+            <two-up v-else>
             <img
               id="original"
               :src="urlOriginal"
@@ -39,19 +46,6 @@
               class="object-cover w-full h-full"
             />
           </two-up>
-          <two-up v-else>
-            <img
-              id="original"
-              :src="urlOriginal"
-              class="object-cover w-full h-full"
-            />
-            <img
-              id="preview"
-              :src="urlOriginal"
-              :style="{ opacity: previewOpacity }"
-              class="object-cover w-full h-full"
-            />
-          </two-up>
         </div>
         <small
           class="block text-sm text-gray-400 mt-1 max-w-xl overflow-x-auto whitespace-nowrap"
@@ -59,26 +53,34 @@
           {{ urlOriginal }}
         </small>
 
-        <!-- Botón de descarga -->
-        <div>
-          <button
-            class="bg-orange-500 text-white py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out hover:bg-orange-600"
-            @click="handleDownload"
-          >
-            Descargar en Avif
-          </button>
-        </div>
+        <div v-if="isGenerated">
+          <!-- Botón de descarga -->
+          <div>
+            <button
+              class="bg-orange-500 text-white py-3 px-6 rounded-full shadow-lg transition duration-300 ease-in-out hover:bg-orange-600"
+              @click="handleDownload"
+            >
+              Descargar
+            </button>
+          </div>
 
-        <!-- Botones para compartir en redes sociales -->
-        <div class="flex justify-center space-x-4 p-6">
-          <button
-            v-for="network in socialNetworks"
-            :key="network.name"
-            @click="sharePhoto(network.name)"
-            class="p-2 bg-gray-800 hover:bg-gray-700 rounded-full transition duration-300 ease-in-out transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50"
-          >
-            <component :is="network.icon" class="w-6 h-6 text-orange-500" />
-          </button>
+          <!-- Botones para compartir en redes sociales -->
+          <div class="flex  space-x-4 p-6 text-left pl-1">
+            <h3
+          class="text-2xl md:text-2xl md:text-4xl  font-extrabold text-orange-500 text-center"
+        >
+          Compatir:
+        </h3>
+            <button
+              v-for="network in socialNetworks"
+              :key="network.name"
+              @click="sharePhoto(network.name)"
+              class="p-2 bg-gray-800 hover:bg-gray-700 rounded-full transition duration-300 ease-in-out transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50"
+            >
+            <i :class="network.icon" class="w-6 h-6 text-orange-500 text-2xl md:text-2xl md:text-4xl"></i> <!-- Icono de scroll -->
+           
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -93,6 +95,7 @@ import { Facebook, Twitter, Instagram } from "lucide-vue-next";
 import Loading from "../ui/loading.vue";
 import axios from "axios";
 import { funnyPhrases } from "../../data";
+import { faFacebook, faTwitter, faInstagram, faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 
 const loading = ref(true);
 // Obtener el ID de la URL
@@ -102,6 +105,8 @@ const id = searchParams.get("id");
 if (id == null) window.location.href = "/"; // Redirigir si no hay ID
 const urlOriginal = ref("");
 const dataLoaded = ref(false);
+
+const isGenerated = ref(false);
 const previewUrl = ref("");
 const previewOpacity = ref(1);
 const error = ref("");
@@ -143,7 +148,6 @@ const getRandomPhrase = (strings: string[][]): string[] => {
   const randomIndex = Math.floor(Math.random() * strings.length);
   return strings[randomIndex];
 };
-
 
 const topicList = [
   "Add scary ghosts to the background",
@@ -195,9 +199,11 @@ async function getImageDimensions(publicId: string) {
   } catch (error) {
     console.error("Error al obtener las dimensiones de la imagen:", error);
   }
-}// Manejar clics en los botones
+} // Manejar clics en los botones
 const onHalloweenMeClick = async () => {
+  isGenerated.value=false
   await generateImg();
+  isGenerated.value=true
 };
 
 const generateImg = async (retryCount = 0) => {
@@ -222,15 +228,18 @@ const generateImg = async (retryCount = 0) => {
   };
 
   img.onerror = (error) => {
-    console.log(error)
+    console.log(error);
     // Aquí puedes verificar el código de error específico
-    if (error ) {
+    if (error) {
       // Si el error es el que queremos manejar, reintentar
       console.error("Error en la carga de la imagen, reintentando...");
-      if (retryCount < 3) { // Limitar a 3 reintentos
+      if (retryCount < 3) {
+        // Limitar a 3 reintentos
         generateImg(retryCount + 1); // Reintentar
       } else {
-        console.error("Error de carga de imagen después de múltiples intentos.");
+        console.error(
+          "Error de carga de imagen después de múltiples intentos."
+        );
       }
     } else {
       console.error("Error al cargar la imagen:", error);
@@ -246,16 +255,20 @@ const handleDownload = () => {
   a.href = downloadUrl;
   a.download = "image.avif";
   a.click();
-};
-
+}; 
 // Redes sociales
 const socialNetworks = [
-  { name: "Facebook", icon: Facebook },
-  { name: "Twitter", icon: Twitter },
-  { name: "Instagram", icon: Instagram },
+  { name: "Whatsapp", icon: "fa-brands fa-whatsapp" },
 ];
+const sharePhoto = (networkName: string) => {
+  const imageUrl = previewUrl.value; // URL de la imagen generada
+  const textToShare = '¡Mira esta imagen que generé! Gracias a ' + "https://halloween-me.vercel.app"; // Texto a compartir
 
-const sharePhoto = (network) => {};
+  // WhatsApp permite enviar mensajes que incluyen imágenes públicas
+  const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(textToShare + ' ' + imageUrl)}`;
+  window.open(shareUrl, '_blank'); // Abre la URL en una nueva pestaña
+};
+
 </script>
 
 <style scoped>
