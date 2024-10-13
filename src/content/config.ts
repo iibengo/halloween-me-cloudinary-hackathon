@@ -1,13 +1,13 @@
 import { defineCollection } from "astro:content";
 import { cldAssetsLoader } from "astro-cloudinary/loaders";
 
-const images = defineCollection({
+const hackathonImg = defineCollection({
   loader: cldAssetsLoader({
     limit: 4,
-    folder: 'ioni-images'
+    folder: 'hackathonImg'
   })
 })
 
 export const collections = {
-  images
+  hackathonImg
 }

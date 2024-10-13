@@ -18,7 +18,7 @@
             @click="onHalloweenMeClick"
             class="py-3 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50"
           >
-            Crear
+            Generar
           </button>
         </div>
 
@@ -91,11 +91,9 @@
 import { ref, onMounted } from "vue";
 import { getCldImageUrl } from "astro-cloudinary/helpers";
 import "two-up-element";
-import { Facebook, Twitter, Instagram } from "lucide-vue-next";
 import Loading from "../ui/loading.vue";
 import axios from "axios";
 import { funnyPhrases } from "../../data";
-import { faFacebook, faTwitter, faInstagram, faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 
 const loading = ref(true);
 // Obtener el ID de la URL

@@ -2,9 +2,10 @@
 import Layout from "../layouts/Layout.astro"
 import { CldUploadWidget, CldImage } from "astro-cloudinary"
 import { getCollection } from "astro:content"
-import Faq from "../components/faq/faq.vue"  
+import HowTo from '../components/how-to/how-to.vue'
 
-const images = await getCollection("images")
+const images = await getCollection("hackathonImg")
+
 import '../styles/global.css';
 ---
 
@@ -15,19 +16,6 @@ import '../styles/global.css';
         <h1 class="text-3xl font-extrabold text-orange-500 text-left">
           Generador de imágenes Halloween
         </h1>
-        
-        <!-- Sección de ayuda -->
-        <div class="bg-gray-800 text-white p-4 rounded-lg text-left">
-          <h2 class="text-xl font-bold mb-2">¿Cómo usar esta herramienta?</h2>
-          <ol class="list-decimal list-inside space-y-1">
-            <li>Sube tu imagen</li>
-            <li>Elige un tema</li>
-            <li>Pulsa en crear</li>
-            <li>Espera a que termine</li>
-            <li>¡ Listo ! Ya puedes comportir tu imagen</li>
-          </ol>
-        </div>
-
         <!-- Componente de subida de imágenes -->
         <CldUploadWidget
           id="upload-widget"
@@ -52,11 +40,15 @@ import '../styles/global.css';
           }}
         >
           <button class="mt-6 w-full py-3 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50">
-            Subir imagen
+            Subir foto
+          </button>
+          <button class="mt-6 w-full py-3 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50">
+            Mis imagenes
           </button>
         </CldUploadWidget>
 
         <ul class="grid grid-cols-2 gap-4 mt-6">
+       
           {images.map((image) => (
             <li>
               <a href={`/photo?id=${image.data.public_id}`}>
@@ -73,16 +65,17 @@ import '../styles/global.css';
               </a>
             </li>
           ))}
-        </ul>
+        </ul>    <HowTo   client:only />
       </div>
+  
     </div>
-    <Faq   client:only />
+   
 
   </main>
 
   <script>
     import { navigate } from "astro:transitions/client"
-    
+   
     const widget = document.getElementById("upload-widget")
 
     if (widget) {
