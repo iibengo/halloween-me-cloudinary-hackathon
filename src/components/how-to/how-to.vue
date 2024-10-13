@@ -17,10 +17,10 @@
         <div class=" text-white  rounded-lg text-left">
           <h2 class="text-xl font-bold mb-2"></h2>
           <ol class="list-decimal list-inside space-y-1">
-            <li>Pulsta sobre <label class="text-orange-500">HALLOWEEN ME</label></li>
+            <li>Pulsta sobre el botón <label class="text-orange-500">HALLOWEEN ME</label> de arriba</li>
             <li>Selecciona una foto para generar</li>
             <li>Espera unos segundo</li>
-            <li>¡Foto generada! ya puedes regenerarla o compartirla</li>
+            <li>¡Listo! ya tienes un <label class="text-orange-500">HALLOWEEN ME</label> para compartir</li>
           </ol>
         </div>
         </div>
