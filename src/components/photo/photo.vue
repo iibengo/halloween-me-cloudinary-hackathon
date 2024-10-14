@@ -107,6 +107,8 @@ import Loading from "../ui/loading.vue";
 import axios from "axios";
 import { funnyPhrases } from "../../data";
 import { navigate } from "astro:transitions/client";
+import { addDoc,collection } from "firebase/firestore";
+import { firebaseDb } from "../../firebase/firebase-service";
 const loading = ref(true);
 // Obtener el ID de la URL
 const { searchParams } = new URL(window.location.href);
@@ -122,6 +124,9 @@ const previewOpacity = ref(1);
 const error = ref("");
 
 onMounted(async () => {
+    
+    
+
   urlOriginal.value = getCldImageUrl({ src: id || "" });
   previewUrl.value = urlOriginal.value;
 
@@ -192,18 +197,9 @@ const selectedConfigParams = {
 async function getImageDimensions(publicId: string) {
   try {
     const cloudName = import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME;
-    const apiKey = import.meta.env.PUBLIC_CLOUDINARY_API_KEY;
-    const apiSecret = import.meta.env.CLOUDINARY_API_SECRET;
-
     // Llamar a la API de Cloudinary para obtener detalles del recurso
     const response = await axios.get(
       `https://res.cloudinary.com/${cloudName}/image/upload/fl_getinfo/${publicId}`,
-      {
-        auth: {
-          username: apiKey || "",
-          password: apiSecret || "",
-        },
-      }
     );
     const { width, height } = response.data.input;
     return { width, height };
