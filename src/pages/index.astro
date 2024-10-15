@@ -78,8 +78,8 @@ import "../styles/global.css";
 
   <script>
     import { navigate } from "astro:transitions/client";
-    import { firebaseDb } from "../firebase/firebase-service";
-    import { collection, addDoc } from "firebase/firestore";
+
+import axios from "axios";
     const widget = document.getElementById("upload-widget");
 
     if (widget) {
@@ -88,17 +88,6 @@ import "../styles/global.css";
       ) => {
         const publicId = e.detail.info.public_id;
         
-       /*TODO:CREAR ENDPOINT PARA FIREBASE"
-        try {
-          await addDoc(collection(firebaseDb, "images"), {
-          public_id: publicId,
-          url: "",
-          original: true,
-        });
-        } catch (error) {
-          console.log(error)
-        }
-      */
         navigate(`/photo?id=${publicId}`);
   
       }) as unknown as EventListener);

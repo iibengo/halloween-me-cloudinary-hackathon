@@ -60,7 +60,7 @@
           </div>
 
           <!-- Botones para compartir en redes sociales -->
-          <div class="flex space-x-4  text-left pl-1">
+          <div class="flex space-x-4 text-left pl-1">
             <h3
               class="text-2xl md:text-2xl md:text-4xl font-extrabold text-orange-500 text-center"
             >
@@ -107,7 +107,7 @@ import Loading from "../ui/loading.vue";
 import axios from "axios";
 import { funnyPhrases } from "../../data";
 import { navigate } from "astro:transitions/client";
-import { addDoc,collection } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { firebaseDb } from "../../firebase/firebase-service";
 const loading = ref(true);
 // Obtener el ID de la URL
@@ -124,15 +124,23 @@ const previewOpacity = ref(1);
 const error = ref("");
 
 onMounted(async () => {
-    
-    
-
   urlOriginal.value = getCldImageUrl({ src: id || "" });
   previewUrl.value = urlOriginal.value;
 
   const img = new Image();
   img.src = previewUrl.value;
+
   img.onload = async () => {
+    try {
+      const response = await axios.post("/api/saveGeneratedImg", {
+        imgId: id,
+        original: true,
+        cludinaryUrl: urlOriginal.value,
+      });
+      console.log(response.data); // Respuesta del servidor
+    } catch (error) {
+      console.error("Error al enviar los datos:", error);
+    }
     dataLoaded.value = true;
     await generateImg();
   };
@@ -199,7 +207,7 @@ async function getImageDimensions(publicId: string) {
     const cloudName = import.meta.env.PUBLIC_CLOUDINARY_CLOUD_NAME;
     // Llamar a la API de Cloudinary para obtener detalles del recurso
     const response = await axios.get(
-      `https://res.cloudinary.com/${cloudName}/image/upload/fl_getinfo/${publicId}`,
+      `https://res.cloudinary.com/${cloudName}/image/upload/fl_getinfo/${publicId}`
     );
     const { width, height } = response.data.input;
     return { width, height };
@@ -271,7 +279,9 @@ const sharePhoto = (networkName: string) => {
   const imageUrl = previewUrl.value; // URL de la imagen generada
   const textToShare =
     "¡Mira esta imagen que generé! Gracias a " +
-    "https://halloween-me.vercel.app/photo?id="+id+""; // Texto a compartir
+    "https://halloween-me.vercel.app/photo?id=" +
+    id +
+    ""; // Texto a compartir
 
   // WhatsApp permite enviar mensajes que incluyen imágenes públicas
   const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(textToShare + " " + imageUrl)}`;
