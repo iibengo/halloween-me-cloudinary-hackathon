@@ -1,0 +1,1 @@
+export * from './save-image-service-wrapper/save-image-service-wrapper'
