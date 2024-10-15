@@ -7,12 +7,11 @@ export class SaveImageServiceWrapper {
     cloudinaryUrl: string
   ) {
     try {
-      const response = await axios.post("/api/saveImageService", {
+    await axios.post("/api/saveImageService", {
         cloudinaryId,
         original,
         cloudinaryUrl,
       });
-      console.log(response.data); // Respuesta del servidor
     } catch (error) {
       console.error("Error al enviar los datos:", error);
     }

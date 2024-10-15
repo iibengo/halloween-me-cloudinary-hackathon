@@ -4,6 +4,7 @@ import {
   GetImageDimensionsService,
   GenerateImageConfigService,
 } from "@/cloudinary";
+import { SaveImageServiceWrapper } from "@/service-wrappers";
 
 export function useGenerateImgService(
   id: string,
@@ -32,10 +33,12 @@ export function useGenerateImgService(
       const img = new Image();
       img.src = newUrl;
 
-      img.onload = () => {
+      img.onload = async () => {
+        await SaveImageServiceWrapper.post(id, false, newUrl);
         dataLoaded.value = true;
         previewOpacity.value = 1;
         isGenerated.value = true;
+        
       };
 
       img.onerror = () => {

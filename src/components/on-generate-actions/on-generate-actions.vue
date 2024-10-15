@@ -54,7 +54,6 @@ const handleDownload = () => {
 
 const socialNetworks = [{ name: "Whatsapp", icon: "fa-brands fa-whatsapp" }];
 const sharePhoto = (networkName: string) => {
-    console.log("afafadf")
   const imageUrl = props.previewUrl; 
   const textToShare =
     "¡Mira esta imagen que generé! Gracias a Halloween Me: " +
