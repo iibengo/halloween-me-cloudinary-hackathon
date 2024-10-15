@@ -29,6 +29,8 @@
     "astro": "^4.15.12",
     "astro-cloudinary": "^1.1.0",
     "axios": "^1.7.7",
+    "firebase": "^10.14.1",
+    "firebase-admin": "^12.6.0",
     "lucide-vue-next": "^0.451.0",
     "prettier": "^3.3.3",
     "two-up-element": "^1.0.1"
