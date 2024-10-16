@@ -36,8 +36,7 @@ export const POST: APIRoute = async ({ request }) => {
     }));
 
     const filteredData = data.filter(doc => {
-        console.log(doc.id); // Imprime el ID del documento actual
-        return doc.id === imgId; // Compara con imgId
+       return doc.id === imgId; // Compara con imgId
     }); 
 
     return new Response(
