@@ -13,15 +13,15 @@
         </div>
 
         <div class="relative inline-block overflow-hidden rounded-lg border-4 border-orange-500">
-          <img v-if="!isGenerated" id="preview" :src="previewUrl" :style="{ opacity: previewOpacity }" class="object-cover w-full h-full" />
+          <img v-if="!isGenerated" cloudinaryId="preview" :src="previewUrl" :style="{ opacity: previewOpacity }" class="object-cover w-full h-full" />
           <two-up v-else>
-            <img id="original" :src="urlOriginal" class="object-cover w-full h-full" />
-            <img id="preview" :src="previewUrl" :style="{ opacity: previewOpacity }" class="object-cover w-full h-full" />
+            <img cloudinaryId="original" :src="urlOriginal" class="object-cover w-full h-full" />
+            <img cloudinaryId="preview" :src="previewUrl" :style="{ opacity: previewOpacity }" class="object-cover w-full h-full" />
           </two-up>
         </div>
 
         <div v-if="isGenerated">
-          <OnGenerateActions :urlOriginal="urlOriginal" :previewUrl="previewUrl" :id="id" />
+          <OnGenerateActions :urlOriginal="urlOriginal" :previewUrl="previewUrl" :cloudinaryId="cloudinaryId" />
         </div>
         <div class="flex mt-0 p-0">
           <span class="text-orange-500">Imagen original: </span>
@@ -48,25 +48,22 @@ import OnGenerateActions from '@/components/on-generate-actions/on-generate-acti
 import { useGenerateImgService } from '@/composables/';  
 
 const { searchParams } = new URL(window.location.href);
-const id = searchParams.get("id") || "";
-
-if (id == null) window.location.href = "/"; 
-const urlOriginal = ref(getCldImageUrl({ src: id }));
-const { generateImg, previewUrl, previewOpacity, isGenerated, dataLoaded } = useGenerateImgService(id, urlOriginal.value);  // <-- Cambia el nombre de la función
+const cloudinaryId = searchParams.get("cid") || "";
+if (cloudinaryId == null) window.location.href = "/"; 
+const urlOriginal = ref(getCldImageUrl({ src: cloudinaryId }));
+const { processPhotoOnload,generatePhoto, previewUrl, previewOpacity, isGenerated, dataLoaded } = useGenerateImgService(cloudinaryId, urlOriginal.value);  // <-- Cambia el nombre de la función
 
 onMounted(async () => {
   const img = new Image();
   img.src = previewUrl.value;
 
   img.onload = async () => {
-    await SaveImageServiceWrapper.post(id, true, urlOriginal.value);
-    dataLoaded.value = true;
-    await generateImg(); 
+    await processPhotoOnload(); 
   };
 });
 
 const onHalloweenMeClick = async () => {
-  await generateImg();
+  await generatePhoto();
 };
 
 const onNewClick = async () => {

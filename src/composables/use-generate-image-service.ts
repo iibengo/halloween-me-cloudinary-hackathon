@@ -4,7 +4,7 @@ import {
   GetImageDimensionsService,
   GenerateImageConfigService,
 } from "@/cloudinary";
-import { SaveImageServiceWrapper } from "@/service-wrappers";
+import { getGenerationServiceWrapper, SaveImageServiceWrapper } from "@/service-wrappers";
 
 export function useGenerateImgService(
   id: string,
@@ -16,25 +16,31 @@ export function useGenerateImgService(
   const isGenerated = ref(false);
   const dataLoaded = ref(false);
 
-  const generateImg = async (retryCount = 0) => {
+  const generatePhoto = async (retryCount = 0) => {
     isGenerated.value = false;
     dataLoaded.value = false;
 
     try {
-      const { width, height } = await GetImageDimensionsService.get(id);
-      const config = GenerateImageConfigService.getConfig();
-      const newUrl = getCldImageUrl({
-        src: id,
-        replaceBackground: config.topic,
-        overlays: config.overlay(width, height),
-      });
+      const existGeneration = await getGenerationServiceWrapper.get(id);
+      let url
+        const { width, height } = await GetImageDimensionsService.get(id);
+        const config = GenerateImageConfigService.getConfig();
+         url = getCldImageUrl({
+          src: id,
+          replaceBackground: config.topic,
+          overlays: config.overlay(width, height),
+        });
+      
+     
       previewOpacity.value = 0.3;
-      previewUrl.value = newUrl;
+      previewUrl.value = url;
       const img = new Image();
-      img.src = newUrl;
+      img.src = url;
 
       img.onload = async () => {
-        await SaveImageServiceWrapper.post(id, false, newUrl);
+        if(!existGeneration.length){
+        await SaveImageServiceWrapper.post(id, false, url);
+        }
         dataLoaded.value = true;
         previewOpacity.value = 1;
         isGenerated.value = true;
@@ -43,7 +49,50 @@ export function useGenerateImgService(
 
       img.onerror = () => {
         if (retryCount < retryLimit) {
-          generateImg(retryCount + 1);
+          generatePhoto(retryCount + 1);
+        }
+      };
+    } catch (error) {
+      console.error("Error generando la imagen:", error);
+    }
+  };
+  const processPhotoOnload = async (retryCount = 0) => {
+    isGenerated.value = false;
+    dataLoaded.value = false;
+
+    try {
+      const existGeneration = await getGenerationServiceWrapper.get(id);
+      let url
+      if(!existGeneration.length){
+        const { width, height } = await GetImageDimensionsService.get(id);
+        const config = GenerateImageConfigService.getConfig();
+         url = getCldImageUrl({
+          src: id,
+          replaceBackground: config.topic,
+          overlays: config.overlay(width, height),
+        });
+      }else{
+         url = existGeneration[0].cloudinaryUrl || "";
+      }
+     
+      previewOpacity.value = 0.3;
+      previewUrl.value = url;
+      const img = new Image();
+      img.src = url;
+
+      img.onload = async () => {
+        if(!existGeneration.length){
+        await SaveImageServiceWrapper.post(id, false, url);
+        }
+        dataLoaded.value = true;
+        previewOpacity.value = 1;
+        isGenerated.value = true;
+        
+      };
+
+      img.onerror = () => {
+        if (retryCount < retryLimit) {
+          processPhotoOnload(retryCount + 1);
         }
       };
     } catch (error) {
@@ -52,7 +101,8 @@ export function useGenerateImgService(
   };
 
   return {
-    generateImg,
+    processPhotoOnload,
+    generatePhoto,
     previewUrl,
     previewOpacity,
     isGenerated,
