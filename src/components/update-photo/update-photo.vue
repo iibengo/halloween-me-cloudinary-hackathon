@@ -54,19 +54,17 @@
   // Función para obtener las imágenes desde el servidor (simulando el await getCollection de Astro)
   const fetchImages = async () => {
     const data = await getPublicHalloweenMeListServiceWrapper.get();
-    console.log(data,"data----------------")
-    images.value = data; // Asigna los datos recibidos a la referencia de imágenes
+   images.value = data; // Asigna los datos recibidos a la referencia de imágenes
   };
   
   // Manejo de la subida exitosa
   const onUploadSuccess = (result) => {
-    console.log("Upload successful:", result);
     fetchImages(); // Vuelve a cargar las imágenes después de una carga exitosa
   };
   
   // Llamada a la función para cargar las imágenes al montar el componente
   onMounted(() => {
-    console.log("fadadfadfadf")
+   
     fetchImages();
   });
   </script>

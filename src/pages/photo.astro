@@ -1,7 +1,7 @@
 ---
 import PhotoView from "../components/photo/photo.vue";
 const { searchParams } = Astro.url;
-const id = searchParams.get("id");
+const id = searchParams.get("cid");
 import Layout from "../layouts/Layout.astro"
 
 if (id == null) return Astro.redirect("/");

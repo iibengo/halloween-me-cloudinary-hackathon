@@ -10,10 +10,10 @@ Este es un proyecto desarrollado para el [Cloudinary Hackathon](https://cloudina
 - **Galería de Imágenes:** Explora y comparte tus creaciones favoritas.
 
 ## 💻 Tecnologías Utilizadas
-- **Frontend:** Vue.js, HTML
+- **Frontend:** VueJS & HTML
 - **Backend:** AstroJS
-- **Base de Datos:** Firebase
-- **API de Cloudinary** para gestión de imágenes y videos.
+- **Base de Datos:** Cloudinary & Firebase 
+- **API de Cloudinary** para generación de imágenes.
 
 ## 🚀 Instalación
 1. Clona el repositorio:
