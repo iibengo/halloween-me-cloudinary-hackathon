@@ -12,12 +12,13 @@
           </button>
         </div>
 
-        <div class="relative inline-block overflow-hidden rounded-lg border-4 border-orange-500">
-          <img v-if="!isGenerated" cloudinaryId="preview" :src="previewUrl" :style="{ opacity: previewOpacity }" class="object-cover w-full h-full" />
-          <img v-else cloudinaryId="preview" :src="previewUrl" :style="{ opacity: previewOpacity }" class="object-cover w-full h-full" />
-         
-        </div>
-
+        <div class="relative flex justify-center items-center">
+  <!-- Div para contener la imagen con el borde ajustado -->
+  <div class="inline-block overflow-hidden rounded-lg border-4 border-orange-500">
+    <img v-if="!isGenerated" cloudinaryId="preview" :src="previewUrl" :style="{ opacity: previewOpacity }" class="object-cover max-w-full h-auto" />
+    <img v-else cloudinaryId="preview" :src="previewUrl" :style="{ opacity: previewOpacity }" class="object-cover max-w-full h-auto" />
+  </div>
+</div>
         <div v-if="isGenerated">
           <OnGenerateActions :urlOriginal="urlOriginal" :previewUrl="previewUrl" :cloudinaryId="cloudinaryId" />
         </div>

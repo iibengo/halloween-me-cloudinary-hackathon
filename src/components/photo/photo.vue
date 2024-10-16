@@ -12,16 +12,21 @@
           </button>
         </div>
 
-        <div class="relative inline-block overflow-hidden rounded-lg border-4 border-orange-500">
-          <img v-if="!isGenerated" id="preview" :src="previewUrl" :style="{ opacity: previewOpacity }" class="object-cover w-full h-full" />
-          <two-up v-else>
-            <img id="original" :src="urlOriginal" class="object-cover w-full h-full" />
-            <img id="preview" :src="previewUrl" :style="{ opacity: previewOpacity }" class="object-cover w-full h-full" />
-          </two-up>
-        </div>
+        <div class="relative flex justify-center items-center">
+  <!-- Div para contener la imagen o el componente two-up con el borde ajustado -->
+  <div class="inline-block overflow-hidden rounded-lg border-4 border-orange-500">
+    <img v-if="!isGenerated" cloudinaryId="preview" :src="previewUrl" :style="{ opacity: previewOpacity }" class="object-cover max-w-full h-auto" />
+    
+    <two-up v-else>
+      <img cloudinaryId="original" :src="urlOriginal" class="object-cover max-w-full h-auto" />
+      <img cloudinaryId="preview" :src="previewUrl" :style="{ opacity: previewOpacity }" class="object-cover max-w-full h-auto" />
+    </two-up>
+  </div>
+</div>
+
 
         <div v-if="isGenerated">
-          <OnGenerateActions :urlOriginal="urlOriginal" :previewUrl="previewUrl" :id="id" />
+          <OnGenerateActions :urlOriginal="urlOriginal" :previewUrl="previewUrl" :cloudinaryId="cloudinaryId" />
         </div>
         <div class="flex mt-0 p-0">
           <span class="text-orange-500">Imagen original: </span>

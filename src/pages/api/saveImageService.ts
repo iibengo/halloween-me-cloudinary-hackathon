@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { firebaseDb } from "../../firebase/firebase-service";
 
 export const GET: APIRoute = async () => {
@@ -18,7 +18,10 @@ export const POST: APIRoute = async ({ request }) => {
     const body = await request.json();
 
     try {
-        const docRef = await addDoc(collection(firebaseDb, 'hackathonGenerations'), body);
+        const docRef = await addDoc(collection(firebaseDb, 'hackathonGenerations'), {...body,
+            createdAt: serverTimestamp()  // Agregar el timestamp
+        
+        });
         return new Response(
             JSON.stringify({ success: true, id: docRef.id }),
             {
