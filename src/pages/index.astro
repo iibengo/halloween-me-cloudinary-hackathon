@@ -4,9 +4,6 @@ import Layout from "../layouts/Layout.astro";
 import { CldUploadWidget } from "astro-cloudinary";
 import HowTo from "../components/how-to/how-to.vue";
 import "../styles/global.css";
-
-// Inicializa las imágenes vacías (opcional, ya que lo manejaremos en el script)
-let images = []; // Cambia a let para poder modificar el array
 ---
 
 <Layout title="Generador Halloween - Cloudinary Hackathon">
@@ -60,7 +57,8 @@ let images = []; // Cambia a let para poder modificar el array
     </div>
   </main>
 
-  <script lang="ts">
+  <script lang="ts" is:inline>
+    
     const widget = document.getElementById("upload-widget");
     const imagesList = document.getElementById("images-list"); // Selecciona el contenedor de las imágenes
 
@@ -69,13 +67,12 @@ let images = []; // Cambia a let para poder modificar el array
       try {
         const response = await fetch("/api/getPublicHalloweenMeListService"); // Llama a tu API aquí
         const data = await response.json(); // Convierte la respuesta a JSON
-        console.log("response", data); // Muestra la respuesta en consola
-
+     
         // Actualiza el DOM o el estado según sea necesario
         if (data.success) {
           images = data.data; // Asigna los datos recibidos a la variable images
-          console.log("Images loaded:", images); // Muestra las imágenes cargadas
-
+       
+          
           // Limpiar la lista existente
           imagesList.innerHTML = "";
 
@@ -84,7 +81,7 @@ let images = []; // Cambia a let para poder modificar el array
             const listItem = document.createElement("li");
             listItem.setAttribute("key", image.cloudinaryId);
             listItem.innerHTML = `
-              <a href="/photo?id=${image.cloudinaryId}">
+              <a href="/hm?id=${image.id}">
                 <img
                   src="${image.cloudinaryUrl}"
                   width="250"
@@ -108,10 +105,21 @@ let images = []; // Cambia a let para poder modificar el array
     fetchImages();
 
     if (widget) {
-      widget.addEventListener("clduploadwidget:success", (e) => {
+      widget.addEventListener("clduploadwidget:success", async (e) => {
         const publicId = e.detail.info.public_id;
-        console.log("Upload successful, public ID:", publicId);
-        window.location.href = `/photo?id=${publicId}`;
+        await fetch("/api/saveImageService", {
+    method: 'POST',  // Cambia el método a POST
+    headers: {
+        'Content-Type': 'application/json'  // Define el tipo de contenido como JSON
+    },
+    body: JSON.stringify({  // Convierte los datos a JSON y los envía en el cuerpo de la solicitud
+        cloudinaryId: publicId,
+        original: true,
+        cloudinaryUrl: ""
+    })
+}); 
+
+        window.location.href = `/photo?cid=${publicId}`;
       });
     }
   </script>

@@ -1,5 +1,5 @@
 import { funnyPhrases, topicList } from "@/data";
-import { getRandomString, getRandomStringArray } from "@/functions";
+import {  getRandomStringArray } from "@/functions";
 import { CreateOverlayService } from "./create-overlay-service";
 
 export class GenerateImageConfigService {

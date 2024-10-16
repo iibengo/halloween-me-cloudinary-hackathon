@@ -16,25 +16,28 @@ export function useGenerateImgService(
   const isGenerated = ref(false);
   const dataLoaded = ref(false);
 
-  const generateImg = async (retryCount = 0) => {
+  const generatePhoto = async (retryCount = 0) => {
     isGenerated.value = false;
     dataLoaded.value = false;
 
     try {
-      const { width, height } = await GetImageDimensionsService.get(id);
-      const config = GenerateImageConfigService.getConfig();
-      const newUrl = getCldImageUrl({
-        src: id,
-        replaceBackground: config.topic,
-        overlays: config.overlay(width, height),
-      });
+     let url
+        const { width, height } = await GetImageDimensionsService.get(id);
+        const config = GenerateImageConfigService.getConfig();
+         url = getCldImageUrl({
+          src: id,
+          replaceBackground: config.topic,
+          overlays: config.overlay(width, height),
+        });
+      
+     
       previewOpacity.value = 0.3;
-      previewUrl.value = newUrl;
+      previewUrl.value = url;
       const img = new Image();
-      img.src = newUrl;
+      img.src = url;
 
       img.onload = async () => {
-        await SaveImageServiceWrapper.post(id, false, newUrl);
+        await SaveImageServiceWrapper.post(id, false, url);
         dataLoaded.value = true;
         previewOpacity.value = 1;
         isGenerated.value = true;
@@ -43,16 +46,17 @@ export function useGenerateImgService(
 
       img.onerror = () => {
         if (retryCount < retryLimit) {
-          generateImg(retryCount + 1);
+          generatePhoto(retryCount + 1);
         }
       };
     } catch (error) {
       console.error("Error generando la imagen:", error);
     }
   };
-
+ 
   return {
-    generateImg,
+   
+    generatePhoto,
     previewUrl,
     previewOpacity,
     isGenerated,

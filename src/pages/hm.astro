@@ -1,11 +1,11 @@
 ---
-import PhotoView from "../components/photo/photo.vue";
+import GenerationView from "../components/generation/generation.vue";
 const { searchParams } = Astro.url;
-const id = searchParams.get("cid");
+const id = searchParams.get("id");
 import Layout from "../layouts/Layout.astro"
 
 if (id == null) return Astro.redirect("/");
 ---
 <Layout title="Cloudinary Hackathon">
-  <PhotoView client:only />
+  <GenerationView client:only />
 </Layout>
