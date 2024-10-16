@@ -4,8 +4,7 @@ import {
   query,
   where,
   getDocs,
-  orderBy,
-  limit,
+ limit
 } from "firebase/firestore";
 import { firebaseDb } from "../../firebase/firebase-service";
 
@@ -16,11 +15,7 @@ interface HackathonGeneration {
   cloudinaryUrl: string;
   imgId: string;
 }
-interface ResponseData {
-  original: boolean;
-  cloudinaryId: string;
-  cloudinaryUrl: string;
-}
+
 export const POST: APIRoute = async ({ request }) => {
   
   try {
@@ -28,6 +23,7 @@ export const POST: APIRoute = async ({ request }) => {
     const q = query(
       collection(firebaseDb, "hackathonGenerations"),
       where("original", "==", false),
+      limit(10)
     );
     const querySnapshot = await getDocs(q);
     const data = querySnapshot.docs.map((doc) => ({
