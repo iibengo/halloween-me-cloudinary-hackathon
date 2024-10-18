@@ -1,8 +1,7 @@
 import { ref } from "vue";
 import { getCldImageUrl } from "astro-cloudinary/helpers";
 import {
-  GetImageDimensionsService,
-  GenerateImageConfigService,
+  GetImageDimensionsService
 } from "@/cloudinary";
 import { SaveImageServiceWrapper } from "@/service-wrappers";
 
@@ -16,14 +15,13 @@ export function useGenerateImgService(
   const isGenerated = ref(false);
   const dataLoaded = ref(false);
 
-  const generatePhoto = async (retryCount = 0) => {
+  const generatePhoto = async (config:any,retryCount = 0) => {
     isGenerated.value = false;
     dataLoaded.value = false;
 
     try {
      let url
         const { width, height } = await GetImageDimensionsService.get(id);
-        const config = GenerateImageConfigService.getConfig();
          url = getCldImageUrl({
           src: id,
           replaceBackground: config.topic,
@@ -46,7 +44,7 @@ export function useGenerateImgService(
 
       img.onerror = () => {
         if (retryCount < retryLimit) {
-          generatePhoto(retryCount + 1);
+          generatePhoto(config,retryCount + 1);
         }
       };
     } catch (error) {

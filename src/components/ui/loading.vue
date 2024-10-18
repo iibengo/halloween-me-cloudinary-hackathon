@@ -21,14 +21,9 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import {loadingTexts} from '@/data'
 
-const loadingTexts = [
-  'Invocando espíritus...',
-  'Preparando pociones...',
-  'Despertando zombies...',
-  'Encendiendo velas negras...',
-  'Afilando colmillos...',
-];
+
 
 const loadingText = ref(loadingTexts[0]);
 let intervalId;

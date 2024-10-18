@@ -17,11 +17,11 @@
         <div class=" text-white  rounded-lg text-left">
           <h2 class="text-xl font-bold mb-2"></h2>
           <ol class="list-decimal list-inside space-y-1">
-            <li>Pulsta sobre el botón <label class="text-orange-500">HALLOWEEN ME</label> de arriba</li>
-            <li>Selecciona una foto para generar</li>
-            <li>Espera unos segundo</li>
-            <li>¡Listo! ya tienes un <label class="text-orange-500">HALLOWEEN ME</label> para compartir</li>
-          </ol>
+  <li>Pulsa el botón <label class="text-orange-500">HALLOWEEN ME</label> ubicado en la parte superior.</li>
+  <li>Selecciona una foto para generar tu contenido.</li>
+  <li>Espera unos segundos mientras procesamos tu imagen.</li>
+  <li>¡Todo listo! Ahora tienes tu <label class="text-orange-500">HALLOWEEN ME</label> listo para compartir.</li>
+</ol>
         </div>
         </div>
       </transition>

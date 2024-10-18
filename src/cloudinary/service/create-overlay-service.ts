@@ -7,7 +7,9 @@ export class CreateOverlayService {
         fontSize, 
         color: "#FFFFFF", 
         lineSpacing: 100,
-        letterSpacing: 3,
+        letterSpacing: 3,  
+        stroke: "#000000", // Color del borde (negro)
+        border: "25px_solid_black"
       },
       position: {
         gravity: "south", 
