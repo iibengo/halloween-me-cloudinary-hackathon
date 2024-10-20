@@ -37,7 +37,6 @@
         </div>
       </div>
     </transition>
-    <button @click="handleLogout">Cerrar Sesión</button>
   </div>
 </template>
 
@@ -71,27 +70,7 @@ const questions = [
       "No hay un límite establecido, pero recomendamos mantener la calidad y el tamaño manejables.",
   },
 ];
-// Función para alternar la respuesta visible
-const handleLogout = async (index) => {
-  try {
-    const response = await fetch("/api/loguot", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Error durante el cierre de sesión:", errorData);
-      throw new Error("Error al cerrar sesión: " + errorData.message);
-    }
-    // Redirigir al usuario a la página de login
-    window.location.href = "/login"; // Cambia esto según sea necesario
-  } catch (error) {
-    console.error("Error durante el cierre de sesión:", error);
-    // Muestra el mensaje de error al usuario
-  }
-};
+
 // Función para alternar la respuesta visible
 const toggleAnswer = (index) => {
   activeQuestion.value = activeQuestion.value === index ? null : index; // Alterna entre mostrar y ocultar la respuesta
