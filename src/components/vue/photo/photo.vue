@@ -101,24 +101,29 @@ const isModalOpen = ref(false);
 const input1 = ref("");
 const input2 = ref("");
 const selectedOption = ref("");
-if (id == null) window.location.href = "/"; 
 const urlOriginal = ref(getCldImageUrl({ src: id }));
-const { generatePhoto, previewUrl, previewOpacity, isGenerated, dataLoaded } = useGenerateImgService(id, urlOriginal.value);  // <-- Cambia el nombre de la función
-
+const { generatePhoto, previewUrl, previewOpacity, isGenerated, dataLoaded } = useGenerateImgService(id, urlOriginal.value);  
+const props = defineProps({
+  userId: {
+    type: String,
+    required: false,
+  },
+});
 onMounted(async () => {
+  console.log("vonMounted",props.userId)
   const img = new Image();
   img.src = previewUrl.value;
   img.onload = async () => {
-    
+   
   const config = GenerateImageConfigService.getConfig();
-    await generatePhoto(config); 
+    await generatePhoto(config,props.userId); 
   };
 });
 
 const onHalloweenMeClick = async () => {
 
-  const config = GenerateImageConfigService.getConfig(1);
-  await generatePhoto(config);
+  const config = GenerateImageConfigService.getConfig(0);
+  await generatePhoto(config,props.userId);
 };
 
 const onNewClick = async () => {

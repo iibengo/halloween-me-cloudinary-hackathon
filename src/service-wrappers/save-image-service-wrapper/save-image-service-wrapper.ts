@@ -4,7 +4,8 @@ export class SaveImageServiceWrapper {
   public static async post(
     cloudinaryId: string,
     original: boolean,
-    cloudinaryUrl: string
+    cloudinaryUrl: string,
+    userId:string
   ) {
     try {
     const likes = 0
@@ -12,7 +13,8 @@ export class SaveImageServiceWrapper {
         cloudinaryId,
         original,
         cloudinaryUrl,
-        likes
+        likes,
+        userId
       });
     } catch (error) {
       console.error("Error al enviar los datos:", error);

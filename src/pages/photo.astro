@@ -1,11 +1,29 @@
 ---
+import { auth } from "@/firebase/firebase-admin";
 import PhotoView from "../components/vue/photo/photo.vue";
 const { searchParams } = Astro.url;
 const id = searchParams.get("cid");
 import Layout from "../layouts/Layout.astro"
+const { request } = Astro;
 
 if (id == null) return Astro.redirect("/");
+let decodedClaims;
+let userId = "";
+// Extraer la cookie de sesión
+const cookies = request.headers.get("cookie") || "";
+const sessionCookie = cookies
+  .split(";")
+  .find((cookie) => cookie.trim().startsWith("session=")) as string;
+
+try {
+  // Verificar la sesión del usuario con Firebase Admin
+  decodedClaims = await auth.verifySessionCookie(sessionCookie.split("=")[1]);
+  userId = decodedClaims.uid;
+} catch (error) {
+   return Astro.redirect("/login");
+}
 ---
 <Layout title="HalloweenMe app - Cloudinary Hackatho">
-  <PhotoView client:only />
+
+  <PhotoView client:only userId={userId}/>
 </Layout>

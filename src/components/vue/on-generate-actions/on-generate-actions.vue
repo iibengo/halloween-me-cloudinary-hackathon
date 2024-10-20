@@ -1,32 +1,50 @@
 <template>
   <div class="p-4">
     <div class="relative inline-block flex">
-
-      <div class="flex items-center  mr-8" v-if="showLike">
-      <button @click="toggleHeart" class="flex items-center bg-gray-800 hover:bg-gray-700 rounded-full p-2 transition duration-300 ease-in-out">
-        <img src="assets/icon/pumpkin.svg" alt="Pumpkin Icon" class="w-6 h-6 " />
-      </button>
-      <span class="text-orange-500 font-semibold ml-2">{{ heartCount }}</span>
-    </div>
+      <div class="flex items-center mr-8" v-if="showLike">
+        <button
+          @click="toggleHeart"
+          class="flex items-center bg-gray-800 hover:bg-gray-700 rounded-full p-2 transition duration-300 ease-in-out"
+        >
+          <img
+            src="assets/icon/pumpkin.svg"
+            alt="Pumpkin Icon"
+            class="w-6 h-6"
+          />
+        </button>
+        <span class="text-orange-500 font-semibold ml-2">{{ heartCount }}</span>
+      </div>
 
       <!-- Botón de compartir -->
       <button
         @click="togglePopup"
         class="p-2 md:p-2 bg-gray-800 hover:bg-gray-700 rounded-full transition duration-300 ease-in-out transform hover:scale-110 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 border border-orange-600"
       >
-        <p class="text-1xl md:text-1xl font-extrabold text-orange-500 text-center flex items-center space-x-2 hover:text-white">
-          
+        <p
+          class="text-1xl md:text-1xl font-extrabold text-orange-500 text-center flex items-center space-x-2 hover:text-white"
+        >
           <span>Compartir</span>
         </p>
       </button>
-
+      <!-- Botón de compartir -->
+      <button
+        v-if="showEdit"
+        @click="onClickEdit"
+        class="p-2 ml-4 md:p-2 bg-gray-800 hover:bg-gray-700 rounded-full transition duration-300 ease-in-out transform hover:scale-110 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 border border-orange-600"
+      >
+        <p
+          class="text-1xl md:text-1xl font-extrabold text-orange-500 text-center flex items-center space-x-2 hover:text-white"
+        >
+          <span>Editar</span>
+        </p>
+      </button>
       <!-- Popup para compartir en redes sociales -->
       <div
         v-if="isPopupVisible"
         class="absolute z-50 bg-gray-900 border border-gray-700 rounded-lg mb-2 p-4 shadow-xl space-y-2 w-48 bottom-full left-1/2 md:left-1/3 transform -translate-x-1/2"
         @click.stop
       >
-        <h4 class="text-orange-500 font-bold ">Comparte en:</h4>
+        <h4 class="text-orange-500 font-bold">Comparte en:</h4>
         <button
           v-for="network in socialNetworks"
           :key="network.name"
@@ -37,22 +55,29 @@
           <span class="text-sm text-orange-500">{{ network.name }}</span>
         </button>
         <button
-         
           class="flex items-center space-x-2 p-2 bg-gray-800 hover:bg-orange-600 rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
         >
-          <i  class="fa fa-download text-orange-500 text-xl"></i>
+          <i class="fa fa-download text-orange-500 text-xl"></i>
           <span class="text-sm text-orange-500">Descargar</span>
         </button>
       </div>
     </div>
-  
+
     <!-- Copiar URL de imagen -->
-    <div class="flex flex-col md:flex-row items-center mt-4 p-2 rounded-lg shadow-md space-x-4 overflow-hidden" v-if="false">
+    <div
+      class="flex flex-col md:flex-row items-center mt-4 p-2 rounded-lg shadow-md space-x-4 overflow-hidden"
+      v-if="false"
+    >
       <!-- Título ocupa todo el ancho en móviles -->
-      <span class="text-orange-500 font-semibold text-xl md:text-5xl w-full text-center md:text-left">URL imagen original</span>
+      <span
+        class="text-orange-500 font-semibold text-xl md:text-5xl w-full text-center md:text-left"
+        >URL imagen original</span
+      >
 
       <!-- Texto que muestra la URL -->
-      <small class="block text-sm text-gray-400 max-w-sm overflow-x-auto whitespace-nowrap">
+      <small
+        class="block text-sm text-gray-400 max-w-sm overflow-x-auto whitespace-nowrap"
+      >
         {{ urlOriginal }}
       </small>
 
@@ -76,8 +101,9 @@ const heartCount = ref(0);
 const props = defineProps({
   urlOriginal: String,
   previewUrl: String,
-  id: String,
-  showLike:Boolean,
+  cloudinaryId: String,
+  showLike: Boolean,
+  showEdit: Boolean,
 });
 
 // Redes sociales para compartir
@@ -95,10 +121,14 @@ const togglePopup = () => {
   isPopupVisible.value = !isPopupVisible.value;
 };
 
+// Alternar la visibilidad del popup
+const onClickEdit = () => {
+  window.location.href = "/photo?cid="+props.cloudinaryId
+};
 // Compartir en redes sociales
 const sharePhoto = (networkName: string) => {
   const imageUrl = props.previewUrl;
-  const textToShare = `¡Mira esta imagen que generé! Gracias a Halloween Me: https://halloween-me.vercel.app/photo?id=${props.id}`;
+  const textToShare = `¡Mira esta imagen que generé! Gracias a Halloween Me: https://halloween-me.vercel.app/photo?id=${props.cloudinaryId}`;
 
   let shareUrl = "";
   switch (networkName) {
@@ -138,7 +168,9 @@ img {
 
 /* Estilo para los botones de compartir */
 button {
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  transition:
+    transform 0.3s ease-in-out,
+    box-shadow 0.3s ease-in-out;
 }
 
 button:hover {
