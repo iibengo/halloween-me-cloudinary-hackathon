@@ -1,0 +1,47 @@
+---
+import Layout from "../layouts/Layout.astro";
+import UserProfile from "../components/vue/user-profile/user-profile.vue";
+import TopMenu from "@/components/vue/top-menu/top-menu.vue";
+import { auth } from "@/firebase";
+const { request } = Astro;
+let decodedClaims;
+let userId = "";
+// Extraer la cookie de sesión
+const cookies = request.headers.get("cookie") || "";
+const sessionCookie = cookies
+  .split(";")
+  .find((cookie) => cookie.trim().startsWith("session=")) as string;
+
+try {
+  // Verificar la sesión del usuario con Firebase Admin
+  decodedClaims = await auth.verifySessionCookie(sessionCookie.split("=")[1]);
+  userId = decodedClaims.uid;
+  console.log("Usuario autenticado:", decodedClaims);
+} catch (error) {
+  console.error("Error al verificar la sesión:", error);
+
+  // Aquí debes manejar la redirección al login para realizar el inicio automático
+  // Si quieres permitir un inicio de sesión automático con un ID Token, este paso no es necesario
+  return Astro.redirect("/login");
+}
+---
+
+<Layout title="Generador Halloween - Cloudinary Hackathon">
+  <main
+    class="min-h-screen bg-orange-900 flex flex-col items-center justify-center p-4"
+  >
+    <div class="max-w-md w-full rounded-lg shadow-2xl overflow-hidden">
+      <TopMenu client:only />
+      <div class="p-6 space-y-6 bg-black">
+        <h1 class="text-3xl font-extrabold text-orange-500 text-left">
+        Your generations
+        </h1>
+
+        <!-- Renderizamos el componente ImageList que ahora maneja las imágenes -->
+        <UserProfile client:only userId={userId} />
+      </div>
+    </div>
+  </main>
+
+  <script lang="ts" is:inline></script>
+</Layout>

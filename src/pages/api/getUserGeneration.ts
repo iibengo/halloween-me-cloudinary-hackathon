@@ -1,20 +1,20 @@
-import type { APIRoute } from "astro";
-import { collection, query, where, getDocs, limit, orderBy } from "firebase/firestore";
-import { firebaseDb } from "../../firebase/firebase-service";
+import { firebaseDb } from '@/firebase';
+import type { APIRoute } from 'astro';
+import { collection, getDocs, limit, orderBy, query, where } from 'firebase/firestore';
 
-// Definir una interfaz para los documentos que esperas de Firestore
 interface HackathonGeneration {
   original: boolean;
   cloudinaryId: string;
   cloudinaryUrl: string;
 }
-
-export const GET: APIRoute = async () => {
+export const POST: APIRoute = async ({ request }) => {
+  const { userId } = await request.json();
   try {
     const q = query(
       collection(firebaseDb, "hackathonGenerations"),
       where("original", "==", false),
-      limit(10),
+      where("userId", "==", userId),
+      orderBy('createdAt', 'desc'),
     );
 
     // Ejecutamos la consulta

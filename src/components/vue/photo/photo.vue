@@ -118,7 +118,7 @@ onMounted(async () => {
 const onHalloweenMeClick = async () => {
 
   const config = GenerateImageConfigService.getConfig(1);
-  //await generatePhoto(config);
+  await generatePhoto(config);
 };
 
 const onNewClick = async () => {
