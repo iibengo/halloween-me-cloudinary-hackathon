@@ -94,9 +94,10 @@ import TopMenu from '@/components/vue/top-menu/top-menu.vue';
 import {
   GenerateImageConfigService,
 } from "@/cloudinary";
+
 const { searchParams } = new URL(window.location.href);
 const id = searchParams.get("cid") || "";
-const isModalOpen = ref(true);
+const isModalOpen = ref(false);
 const input1 = ref("");
 const input2 = ref("");
 const selectedOption = ref("");
