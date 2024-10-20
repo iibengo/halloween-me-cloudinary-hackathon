@@ -1,15 +1,12 @@
 ---
-// Importaciones necesarias
 import Layout from "../layouts/Layout.astro";
 import { CldUploadWidget } from "astro-cloudinary";
+import ImageList from "../components/vue/image-list/image-list.vue";
 import HowTo from "../components/vue/how-to/how-to.vue";
-import "../styles/global.css";
 ---
 
 <Layout title="Generador Halloween - Cloudinary Hackathon">
-  <main
-    class="min-h-screen bg-orange-900 flex flex-col items-center justify-center p-4"
-  >
+  <main class="min-h-screen bg-orange-900 flex flex-col items-center justify-center p-4">
     <div class="max-w-md w-full bg-black rounded-lg shadow-2xl overflow-hidden">
       <div class="p-6 space-y-6">
         <h1 class="text-3xl font-extrabold text-orange-500 text-left">
@@ -39,22 +36,18 @@ import "../styles/global.css";
           }}
         >
         <button
-        class="flex items-center justify-center mt-6 w-full py-3 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50"
-      >
-        <img src="assets/icon/pumpkin.svg" alt="Pumpkin Icon" class="w-6 h-6 mr-2" />
-        <span class="mr-2">HALLOWEEN ME </span> 
-        <img src="assets/icon/pumpkin.svg" alt="Pumpkin Icon" class="w-6 h-6 mr-2" />
-        
-      </button>
-      
-          <p class="mt-4 text-1-xl text-orange-500 text-left">
-            Últimos <span class="font-bold">HalloweenMe's</span> generados:
-          </p>
+          class="flex items-center justify-center mt-6 w-full py-3 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50"
+        >
+          <img src="assets/icon/pumpkin.svg" alt="Pumpkin Icon" class="w-6 h-6 mr-2" />
+          <span class="mr-2">HALLOWEEN ME</span>
+          <img src="assets/icon/pumpkin.svg" alt="Pumpkin Icon" class="w-6 h-6 mr-2" />
+        </button>
         </CldUploadWidget>
-
-        <ul id="images-list" class="grid grid-cols-2 gap-4 mt-6">
-          <!-- Las imágenes se agregarán aquí dinámicamente -->
-        </ul>
+        <p class="mt-4 text-1-xl text-orange-500 text-left">
+          Últimos <span class="font-bold">HalloweenMe's</span>
+        </p>
+        <!-- Renderizamos el componente ImageList que ahora maneja las imágenes -->
+        <ImageList client:only />
 
         <HowTo client:only />
       </div>
@@ -62,82 +55,25 @@ import "../styles/global.css";
   </main>
 
   <script lang="ts" is:inline>
-    
     const widget = document.getElementById("upload-widget");
-    const imagesList = document.getElementById("images-list"); // Selecciona el contenedor de las imágenes
-
-    // Función para obtener imágenes de la API
-    const fetchImages = async () => {
-      try {
-        const response = await fetch("/api/getPublicHalloweenMeListService"); // Llama a tu API aquí
-        const data = await response.json(); // Convierte la respuesta a JSON
-     
-        // Actualiza el DOM o el estado según sea necesario
-        if (data.success) {
-          images = data.data; // Asigna los datos recibidos a la variable images
-       
-          
-          // Limpiar la lista existente
-          imagesList.innerHTML = "";
-
-          // Agregar cada imagen al DOM
-          images.forEach((image) => {
-            const listItem = document.createElement("li");
-            listItem.setAttribute("key", image.cloudinaryId);
-            listItem.innerHTML = `
-              <a href="/hm?id=${image.id}">
-                <img
-                  src="${image.cloudinaryUrl}"
-                  width="250"
-                  height="250"
-                  style="border-radius: 0.5rem; border: 4px solid #FFA500;"
-                  alt="Generated Halloween Image"
-                />
-              </a>
-            `;
-            imagesList.appendChild(listItem); // Agrega el item a la lista
-          });
-        } else {
-          console.error("Error fetching images:", data.error); // Maneja el error
-        }
-      } catch (error) {
-        console.error("Error fetching images:", error); // Manejo de errores
-      }
-    };
-
-    // Llama a la función al cargar el cliente
-    fetchImages();
 
     if (widget) {
       widget.addEventListener("clduploadwidget:success", async (e) => {
         const publicId = e.detail.info.public_id;
         await fetch("/api/saveImageService", {
-    method: 'POST',  // Cambia el método a POST
-    headers: {
-        'Content-Type': 'application/json'  // Define el tipo de contenido como JSON
-    },
-    body: JSON.stringify({  // Convierte los datos a JSON y los envía en el cuerpo de la solicitud
-        cloudinaryId: publicId,
-        original: true,
-        cloudinaryUrl: ""
-    })
-}); 
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            cloudinaryId: publicId,
+            original: true,
+            cloudinaryUrl: ""
+          })
+        });
 
         window.location.href = `/photo?cid=${publicId}`;
       });
     }
   </script>
-
-  <style scoped>
-    main {
-      text-align: center;
-    }
-
-    ul {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4px;
-      list-style: none;
-    }
-  </style>
 </Layout>

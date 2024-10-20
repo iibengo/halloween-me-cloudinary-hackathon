@@ -15,7 +15,7 @@ export function useGenerateImgService(
   const isGenerated = ref(false);
   const dataLoaded = ref(false);
 
-  const generatePhoto = async (config:any,retryCount = 0) => {
+  const generatePhoto = async (config:any,userId:string,retryCount = 0) => {
     isGenerated.value = false;
     dataLoaded.value = false;
 
@@ -35,7 +35,7 @@ export function useGenerateImgService(
       img.src = url;
 
       img.onload = async () => {
-        await SaveImageServiceWrapper.post(id, false, url);
+        await SaveImageServiceWrapper.post(id, false, url,userId);
         dataLoaded.value = true;
         previewOpacity.value = 1;
         isGenerated.value = true;
@@ -44,7 +44,7 @@ export function useGenerateImgService(
 
       img.onerror = () => {
         if (retryCount < retryLimit) {
-          generatePhoto(config,retryCount + 1);
+          generatePhoto(config,userId,retryCount + 1);
         }
       };
     } catch (error) {

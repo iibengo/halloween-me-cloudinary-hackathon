@@ -1,0 +1,29 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ImageList from "../components/vue/image-list/image-list.vue";
+import TopMenu from '@/components/vue/top-menu/top-menu.vue';
+---
+
+<Layout title="Generador Halloween - Cloudinary Hackathon">
+  <main class="min-h-screen bg-orange-900 flex flex-col items-center justify-center p-4">
+ 
+    <div class="max-w-md w-full  rounded-lg shadow-2xl overflow-hidden">
+      <TopMenu client:only />
+      <div class="p-6 space-y-6 bg-black">
+        <h1 class="text-3xl font-extrabold text-orange-500 text-left">
+          Últimas generaciones
+        </h1>
+
+
+        <!-- Renderizamos el componente ImageList que ahora maneja las imágenes -->
+        <ImageList client:only />
+
+    
+      </div>
+    </div>
+  </main>
+
+  <script lang="ts" is:inline>
+
+  </script>
+</Layout>

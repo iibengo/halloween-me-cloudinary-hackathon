@@ -24,7 +24,7 @@
   </div>
 </div>
         <div v-if="isGenerated">
-          <OnGenerateActions :urlOriginal="urlOriginal" :previewUrl="previewUrl" :cloudinaryId="cloudinaryId" :showLike="true"/>
+          <OnGenerateActions :urlOriginal="urlOriginal" :previewUrl="previewUrl" :cloudinaryId="cloudinaryId" :showLike="true" :showEdit="true"/>
         </div>
       </div>
     </div>

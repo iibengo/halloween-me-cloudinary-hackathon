@@ -33,10 +33,7 @@
           }
   
           const data = await response.json();
-          console.log("Inicio de sesión anónimo exitoso:", data);
-          
           // Redirigir al usuario a la página inicial
-          window.location.href = "/yourPage"; // Cambia esto a la página que desees después de iniciar sesión
         } catch (error) {
           this.errorMessage = "Error al iniciar sesión anónimamente. " + error.message;
           console.error("Error durante el inicio de sesión:", error);
