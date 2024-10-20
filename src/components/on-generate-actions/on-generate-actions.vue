@@ -92,7 +92,6 @@ const isPopupVisible = ref(false);
 
 // Alternar la visibilidad del popup
 const togglePopup = () => {
-  console.log("entra");
   isPopupVisible.value = !isPopupVisible.value;
 };
 

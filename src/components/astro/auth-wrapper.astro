@@ -1,0 +1,30 @@
+---
+// src/pages/login.astro
+// Asegúrate de tener un layout si lo usas
+import AnomAuth from "../auth-wrapper/do-anonymously-auth.vue";
+import OnAuthStateChanged from "../onAuthStateChanged/onAuthStateChanged.vue";
+
+const { request } = Astro;
+const cookies = request.headers.get("cookie") || "";
+
+const sessionCookie = cookies
+  .split(";")
+  .find((cookie) => cookie.trim().startsWith("session="));
+
+  let isLoged=false
+if (sessionCookie) {
+  isLoged=true
+}
+---
+
+<div>
+<OnAuthStateChanged/>
+  {isLoged ? (
+  
+    <span class="hidden"></span>
+     
+    ) : (
+    <AnomAuth client:only/>
+    )}
+  
+</div>

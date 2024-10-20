@@ -1,0 +1,10 @@
+---
+// src/pages/login.astro
+import Layout from "../layouts/Layout.astro"; // Asegúrate de tener un layout si lo usas
+import LoginAnonymously from "../components/LoginForm/LoginAnonymously.vue";
+
+---
+
+<Layout title="Login - Mi Aplicación">
+  <LoginAnonymously client:load />
+</Layout>

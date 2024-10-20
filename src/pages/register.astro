@@ -1,0 +1,10 @@
+---
+// src/pages/register.astro
+import Layout from "../layouts/Layout.astro"; // Asegúrate de tener un layout si lo usas
+import RegisterForm from "../components/RegisterForm/RegisterForm.vue";
+
+---
+
+<Layout title="Registro - Mi Aplicación">
+  <RegisterForm client:only />
+</Layout>

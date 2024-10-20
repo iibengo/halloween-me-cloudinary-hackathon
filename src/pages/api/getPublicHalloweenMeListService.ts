@@ -28,7 +28,7 @@ export const GET: APIRoute = async () => {
         (doc, index, self) =>
           self.findIndex((d) => d.cloudinaryId === doc.cloudinaryId) === index
       );
-
+      console.log("---------------------www--------",querySnapshot.docs,"")
     return new Response(JSON.stringify({ success: true, data }), {
       status: 200,
       headers: {

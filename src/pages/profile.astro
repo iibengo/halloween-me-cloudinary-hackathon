@@ -1,36 +1,25 @@
 ---
 // src/pages/yourPage.astro
-import GenerationView from "../components/generation/generation.vue";
+import ProfileView from "../components/profile/profile.vue";
 import Layout from "../layouts/Layout.astro";
 import { auth } from "../firebase"; // Importa tu configuración de Firebase
 import { getAuth } from "firebase/auth"; // Para manejar la autenticación
 
 // Obtener las cookies del request
 const { searchParams } = Astro.url;
-const { request } = Astro;
-const id = searchParams.get("id");
-if (id == null) return Astro.redirect("/");
+const { request } = Astro;  
 
 // Extraer la cookie de sesión
 const cookies = request.headers.get("cookie") || "";
 const sessionCookie = cookies
   .split(";")
-  .find((cookie) => cookie.trim().startsWith("session="));
-
-// Si no hay cookie de sesión, redirigir a la página de login
-
-if (!sessionCookie) {
-
-console.log("----------2");
-  return Astro.redirect("/register");
-}
+  .find((cookie) => cookie.trim().startsWith("session=")) as string;
 
 let decodedClaims;
-let userId = ""
+
 try {
   // Verificar la sesión del usuario con Firebase Admin
   decodedClaims = await auth.verifySessionCookie(sessionCookie.split("=")[1]);
-  userId=decodedClaims.uid;
   console.log("Usuario autenticado:", decodedClaims);
 } catch (error) {
   console.error('Error al verificar la sesión:', error);
@@ -43,5 +32,5 @@ try {
 // El usuario está autenticado, se renderiza el contenido
 ---
 <Layout title="HalloweenMe app - Cloudinary Hackatho">
-  <GenerationView client:only userId={userId}/>
+  <ProfileView client:only />
 </Layout>

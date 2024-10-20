@@ -1,12 +1,13 @@
 ---
-// Importaciones necesarias
+
 import Layout from "../layouts/Layout.astro";
 import { CldUploadWidget } from "astro-cloudinary";
 import HowTo from "../components/how-to/how-to.vue";
 import "../styles/global.css";
----
 
+---
 <Layout title="Generador Halloween - Cloudinary Hackathon">
+
   <main
     class="min-h-screen bg-orange-900 flex flex-col items-center justify-center p-4"
   >
@@ -109,8 +110,10 @@ import "../styles/global.css";
     fetchImages();
 
     if (widget) {
+     
       widget.addEventListener("clduploadwidget:success", async (e) => {
         const publicId = e.detail.info.public_id;
+        console.log("llega")
         await fetch("/api/saveImageService", {
     method: 'POST',  // Cambia el método a POST
     headers: {
@@ -122,7 +125,7 @@ import "../styles/global.css";
         cloudinaryUrl: ""
     })
 }); 
-
+console.log("llega2")
         window.location.href = `/photo?cid=${publicId}`;
       });
     }
@@ -140,4 +143,5 @@ import "../styles/global.css";
       list-style: none;
     }
   </style>
+
 </Layout>

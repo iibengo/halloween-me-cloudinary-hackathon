@@ -133,9 +133,6 @@ const closeModal = () => {
 };
 
 const submitForm = () => {
-  console.log("Texto Superior:", input1.value);
-  console.log("Texto Inferior:", input2.value);
-  console.log("Opción seleccionada:", selectedOption.value);
   closeModal();
 };
 </script>
