@@ -41,10 +41,8 @@ import { ref, onMounted } from "vue";
 import { getCldImageUrl } from "astro-cloudinary/helpers";
 import "two-up-element";
 import Loading from "../ui/loading.vue";
-import { navigate } from "astro:transitions/client";
-import OnGenerateActions from '@/components/on-generate-actions/on-generate-actions.vue';
-
-import TopMenu from '@/components/top-menu/top-menu.vue';
+import OnGenerateActions from '@/components/vue/on-generate-actions/on-generate-actions.vue';
+import TopMenu from '@/components/vue/top-menu/top-menu.vue';
 import { getGenerationServiceWrapper } from "@/service-wrappers";
 
 const { searchParams } = new URL(window.location.href);

@@ -1,0 +1,23 @@
+---
+import AnomAuth from "../vue/auth/do-anon-auth.vue";
+const { request } = Astro;
+const cookies = request.headers.get("cookie") || "";
+const sessionCookie = cookies
+  .split(";")
+  .find((cookie) => cookie.trim().startsWith("session="));
+  let isLoged=false
+if (sessionCookie) {
+  isLoged=true
+}
+---
+
+<div>
+
+  {isLoged ? (
+    <span class="hidden"></span>
+
+    ) : (
+    <AnomAuth client:only/>
+    )}
+
+</div>

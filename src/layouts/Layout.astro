@@ -4,6 +4,7 @@ interface Props {
 }
 
 const { title } = Astro.props;
+import AutoLogin from '../components/astro/auto-login.astro'
 ---
 
 <!doctype html>
@@ -21,6 +22,7 @@ const { title } = Astro.props;
 		<title>{title}</title>
 	</head>
 	<body>
+		<AutoLogin/>
 		<slot />
 	</body>
 </html>
