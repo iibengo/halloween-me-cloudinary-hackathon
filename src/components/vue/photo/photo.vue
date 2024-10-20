@@ -110,7 +110,6 @@ const props = defineProps({
   },
 });
 onMounted(async () => {
-  console.log("vonMounted",props.userId)
   const img = new Image();
   img.src = previewUrl.value;
   img.onload = async () => {
