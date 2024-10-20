@@ -88,9 +88,9 @@ import { getCldImageUrl } from "astro-cloudinary/helpers";
 import "two-up-element";
 import Loading from "../ui/loading.vue";
 import { navigate } from "astro:transitions/client";
-import OnGenerateActions from '@/components/on-generate-actions/on-generate-actions.vue';
+import OnGenerateActions from '@/components/vue/on-generate-actions/on-generate-actions.vue';
 import { useGenerateImgService } from '@/composables/';  
-import TopMenu from '@/components/top-menu/top-menu.vue';
+import TopMenu from '@/components/vue/top-menu/top-menu.vue';
 import {
   GenerateImageConfigService,
 } from "@/cloudinary";
@@ -133,9 +133,6 @@ const closeModal = () => {
 };
 
 const submitForm = () => {
-  console.log("Texto Superior:", input1.value);
-  console.log("Texto Inferior:", input2.value);
-  console.log("Opción seleccionada:", selectedOption.value);
   closeModal();
 };
 </script>
