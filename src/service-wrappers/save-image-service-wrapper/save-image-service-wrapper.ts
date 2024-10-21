@@ -9,13 +9,16 @@ export class SaveImageServiceWrapper {
   ) {
     try {
     const likes = 0
-    await axios.post("/api/saveImageService", {
+    const isPublic = false;
+    const response = await axios.post("/api/saveImageService", {
         cloudinaryId,
         original,
         cloudinaryUrl,
         likes,
-        userId
+        userId,
+        isPublic
       });
+      return response?.data.id || [];
     } catch (error) {
       console.error("Error al enviar los datos:", error);
     }

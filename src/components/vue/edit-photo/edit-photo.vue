@@ -30,7 +30,7 @@
                 class="text-1xl md:text-1xl font-extrabold text-orange-500 text-center flex items-center space-x-2 hover:text-white"
               >
                 <i class="fa fa-paint-brush" aria-hidden="true"></i>
-                <span>Cambiar tema</span>
+                <span> Cambiar tema </span>
               </p>
             </button>
           </div>
@@ -66,13 +66,12 @@
 
           <div v-if="isGenerated">
             <OnGenerateActions
-
               :urlOriginal="urlOriginal"
               :previewUrl="previewUrl"
               :cloudinaryId="cloudinaryId"
               :showPublic="true"
-              :isPublic="isPublic"
               @isPublic="clickPublic"
+              :isPublic="isPublic"
             />
           </div>
         </div>
@@ -88,7 +87,6 @@
       :isModalOpen="isModalOpen"
       @closeModal="isModalOpen = false"
       @submitForm="handleSubmit"
-      
     />
   </div>
 </template>
@@ -100,23 +98,24 @@ import "two-up-element";
 import Loading from "../ui/loading.vue";
 import { navigate } from "astro:transitions/client";
 import OnGenerateActions from "@/components/vue/on-generate-actions/on-generate-actions.vue";
-import { useGenerateImgService } from "@/composables/";
+import { useEditImgService } from "@/composables/";
 import TopMenu from "@/components/vue/top-menu/top-menu.vue";
 import SelectTheme from "@/components/vue/dialog/select-theme.vue";
 import { GenerateImageConfigService } from "@/cloudinary";
 import { type ThemeConfig } from "@/model";
-import {  UpdateImageServiceWrapper} from "@/service-wrappers";
+import { getGenerationServiceWrapper ,UpdateImageServiceWrapper} from "@/service-wrappers";
 
 const { searchParams } = new URL(window.location.href);
 const id = searchParams.get("cid") || "";
+const iid = searchParams.get("iid") || "";
 const isModalOpen = ref(false);
 const input1 = ref("");
 const input2 = ref("");
 const selectedOption = ref("");
 const urlOriginal = ref(getCldImageUrl({ src: id }));
 const isPublic = ref(false);
-const { generatePhoto, previewUrl, previewOpacity, isGenerated, dataLoaded,internalId } =
-  useGenerateImgService(id, urlOriginal.value);
+const { editPhoto, previewUrl, previewOpacity, isGenerated, dataLoaded,internalId } =
+  useEditImgService(id, iid, urlOriginal.value);
 const themeConfig = ref<ThemeConfig>({
   input1: "",
   input2: "",
@@ -130,32 +129,30 @@ const props = defineProps({
     required: false,
   },
 });
+const clickPublic = async ()=>{
+  isPublic.value= !isPublic.value
+  await UpdateImageServiceWrapper.postPublic(iid,isPublic.value);
+}
 onMounted(async () => {
   const img = new Image();
   img.src = previewUrl.value;
-  img.onload = async () => {
-    const config = GenerateImageConfigService.getConfig(themeConfig.value);
-    await generatePhoto(config, props.userId);
-  };
+  const existGeneration = await getGenerationServiceWrapper.getByInternal(iid);
+  if (!existGeneration.length) {
+    //   window.location.href = "/";
+  }
+  previewUrl.value = existGeneration[0].cloudinaryUrl;
+  isPublic.value = existGeneration[0].isPublic;
 });
-const clickPublic = async ()=>{
-  isPublic.value= !isPublic.value
-  await UpdateImageServiceWrapper.postPublic(internalId.value,isPublic.value);
-}
+
 const onHalloweenMeClick = async () => {
   const config = GenerateImageConfigService.getConfig(themeConfig.value);
-  await generatePhoto(config, props.userId);
+  await editPhoto(config, props.userId);
 };
 const handleSubmit = async (themeConfig: ThemeConfig) => {
   themeConfig.value = themeConfig;
-
- await onHalloweenMeClick()
+  const config = GenerateImageConfigService.getConfig(themeConfig.value);
+  await editPhoto(config, props.userId);
 };
-
-const onNewClick = async () => {
-  navigate(`/`);
-};
-
 const openModal = () => {
   isModalOpen.value = true;
 };

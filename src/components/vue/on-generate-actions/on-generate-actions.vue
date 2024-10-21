@@ -12,18 +12,33 @@
             class="w-6 h-6"
           />
         </button>
-        <span class="text-orange-500 font-semibold ml-2">{{ heartCount }}</span>
+        <span class="text-orange-500 font-semibold ml-2">{{ likes }}</span>
       </div>
 
       <!-- Botón de compartir -->
       <button
         @click="togglePopup"
+        
         class="p-2 md:p-2 bg-gray-800 hover:bg-gray-700 rounded-full transition duration-300 ease-in-out transform hover:scale-110 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 border border-orange-600"
       >
         <p
           class="text-1xl md:text-1xl font-extrabold text-orange-500 text-center flex items-center space-x-2 hover:text-white"
         >
           <span>Compartir</span>
+        </p>
+      </button>
+      <!-- Botón de compartir -->
+      <button
+        v-if="showPublic"
+         @click="confirmPublic"
+        class="p-2 md:p-2 ml-4 bg-gray-800 hover:bg-gray-700 rounded-full transition duration-300 ease-in-out transform hover:scale-110 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 border border-orange-600"
+      >
+        <p
+          class="text-1xl md:text-1xl font-extrabold text-orange-500 text-center flex items-center space-x-2 hover:text-white"
+        >
+          <span v-if="!isPublic">Publicar</span>
+
+          <span v-else>Ocultar</span>
         </p>
       </button>
       <!-- Botón de compartir -->
@@ -40,27 +55,29 @@
       </button>
       <!-- Popup para compartir en redes sociales -->
       <div
-        v-if="isPopupVisible"
-        class="absolute z-50 bg-gray-900 border border-gray-700 rounded-lg mb-2 p-4 shadow-xl space-y-2 w-48 bottom-full left-1/2 md:left-1/3 transform -translate-x-1/2"
-        @click.stop
-      >
-        <h4 class="text-orange-500 font-bold">Comparte en:</h4>
-        <button
-          v-for="network in socialNetworks"
-          :key="network.name"
-          @click="sharePhoto(network.name)"
-          class="flex items-center space-x-2 p-2 bg-gray-800 hover:bg-orange-600 rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
-        >
-          <i :class="network.icon" class="text-orange-500 text-xl"></i>
-          <span class="text-sm text-orange-500">{{ network.name }}</span>
-        </button>
-        <button
-          class="flex items-center space-x-2 p-2 bg-gray-800 hover:bg-orange-600 rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
-        >
-          <i class="fa fa-download text-orange-500 text-xl"></i>
-          <span class="text-sm text-orange-500">Descargar</span>
-        </button>
-      </div>
+  v-if="isPopupVisible"
+  class="absolute z-50 bg-gray-900 border border-gray-700 rounded-lg mb-2 p-4 shadow-xl space-y-2 w-48 bottom-full left-1/2 md:left-1/3 transform -translate-x-1/2"
+  @click.stop
+>
+  <h4 class="text-orange-500 font-bold">Comparte en:</h4>
+  <button
+    v-for="network in socialNetworks"
+    :key="network.name"
+    @click="sharePhoto(network.name)"
+    class="group flex items-center space-x-2 p-2 bg-gray-800 hover:bg-orange-600 rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+  >
+    <i :class="network.icon" class="text-orange-500 text-xl group-hover:text-white transition-colors duration-300 ease-in-out"></i>
+    <span class="text-sm text-orange-500 group-hover:text-white transition-colors duration-300 ease-in-out">{{ network.name }}</span>
+  </button>
+  <button
+    @click="sharePhoto('Descargar')"
+    class="group flex items-center space-x-2 p-2 bg-gray-800 hover:bg-orange-600 rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+  >
+    <i class="fa fa-download text-orange-500 text-xl group-hover:text-white transition-colors duration-300 ease-in-out"></i>
+    <span class="text-sm text-orange-500 group-hover:text-white transition-colors duration-300 ease-in-out">Descargar</span>
+  </button>
+</div>
+
     </div>
 
     <!-- Copiar URL de imagen -->
@@ -90,20 +107,52 @@
       </button>
     </div>
   </div>
+  <div
+      v-if="isConfirmationVisible"
+      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+      @click="isConfirmationVisible = false"
+    >
+      <div class="bg-gray-900 border border-gray-700 rounded-lg p-4 shadow-xl w-80">
+        <h4 class="text-orange-500 font-bold">Confirmación</h4>
+        <p class="text-gray-300">¿Estás seguro de que deseas {{ isPublic ? 'ocultar' : 'publicar' }} la imagen? Esta será visible para todos si la publicas.</p>
+        <div class="mt-4 flex justify-left">
+          <button
+            @click="clickPublic"
+            class="bg-orange-500 hover:bg-orange-600 text-white rounded-lg px-4 py-2 mr-4"
+          >
+            Sí
+          </button>
+          <button
+            @click="isConfirmationVisible = false"
+            class="bg-gray-800 hover:bg-gray-700 text-white rounded-lg px-4 py-2"
+          >
+            No
+          </button>
+        </div>
+      </div>
+    </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue";
 const isHearted = ref(false);
 const heartCount = ref(0);
+const { searchParams } = new URL(window.location.href);
+
+
+const internalId = searchParams.get("id") || "";
 
 // Props de entrada
 const props = defineProps({
   urlOriginal: String,
   previewUrl: String,
   cloudinaryId: String,
+  internalId: String,
   showLike: Boolean,
   showEdit: Boolean,
+  likes: Number,
+  isPublic: Boolean,
+  showPublic: Boolean,
 });
 
 // Redes sociales para compartir
@@ -112,23 +161,30 @@ const socialNetworks = [
   { name: "Twitter", icon: "fa-brands fa-twitter" },
   { name: "Facebook", icon: "fa-brands fa-facebook" },
 ];
-
+const emit = defineEmits(["liked",'isPublic']);
 // Control del popup
 const isPopupVisible = ref(false);
+const isConfirmationVisible = ref(false);
 
 // Alternar la visibilidad del popup
 const togglePopup = () => {
   isPopupVisible.value = !isPopupVisible.value;
 };
-
+const confirmPublic = () => {
+  isConfirmationVisible.value = true; // Mostrar el popup de confirmación
+};
+const clickPublic =  ()=>{
+ emit("isPublic")
+}
 // Alternar la visibilidad del popup
 const onClickEdit = () => {
-  window.location.href = "/photo?cid="+props.cloudinaryId
+  window.location.href =
+    "/edit?cid=" + props.cloudinaryId + "&iid=" + internalId;
 };
 // Compartir en redes sociales
 const sharePhoto = (networkName: string) => {
-  const imageUrl = props.previewUrl;
-  const textToShare = `¡Mira esta imagen que generé! Gracias a Halloween Me: https://halloween-me.vercel.app/photo?id=${props.cloudinaryId}`;
+  const imageUrl = props.previewUrl as string;
+  const textToShare = `¡Te deseo un feliz Halloween! : https://halloween-me.vercel.app/photo?id=${props.cloudinaryId}`;
 
   let shareUrl = "";
   switch (networkName) {
@@ -141,6 +197,9 @@ const sharePhoto = (networkName: string) => {
     case "Facebook":
       shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(imageUrl)}`;
       break;
+    case "Descargar":
+    shareUrl = `${imageUrl}`;
+    break;
   }
 
   window.open(shareUrl, "_blank");
@@ -148,7 +207,7 @@ const sharePhoto = (networkName: string) => {
 };
 // Alternar el estado del corazón
 const toggleHeart = () => {
-  isHearted.value = !isHearted.value;
+  emit("liked");
   heartCount.value += isHearted.value ? 1 : -1; // Incrementar o decrementar el contador
 };
 // Copiar URL al portapapeles

@@ -58,7 +58,7 @@
         images.value = data.data.map((image: any) => ({
           ...image,
           loaded: true, // Añadimos la propiedad `loaded`
-        }));
+        })).filter(item=> item.userId===props.userId || item.isPublic);
         
         // Actualiza las imágenes reales en el array con placeholders
         imagesWithPlaceholders.value = images.value;

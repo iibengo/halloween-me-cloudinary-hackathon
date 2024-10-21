@@ -15,9 +15,7 @@ export const funnyPhrases: string[][] = [
   ["Soy un monstruo por fuera", "pero un dulce por dentro."],
   ["¿Truco o trato?", "solo trato de sobrevivir a esta fiesta."],
   ["Vengo de una familia de monstruos", "pero yo elegí ser un emoji."],
-  ["Las calabazas siempre son sinceras", "¡por eso tienen cara de asustadas!"],
   ["Disfrazado de zombi", "pero solo quiero dormir."],
-  ["Fui a la tienda a comprar dulces", "pero terminé con una escoba."],
   ["Este año me disfrazo de adulto responsable", "pero no me lo creo ni yo."],
   ["Si me ves gritar", "es solo el truco del disfraz."],
 ];

@@ -17,13 +17,9 @@
             <!-- Contenedor para el icono/imágen y el texto -->
             <div class="flex items-center">
               <!-- Icono o imagen -->
-              <img
-                v-if="item.img"
-                :src="item.img"
-                alt="Pumpkin Icon"
-                class="w-6 h-6 mr-2"
-                 @click="naviegate(item.navigate)"
-              />
+            <span v-if="item.img">
+              🎃
+            </span>
               <i
                 v-else
                 :class="item.icon"
