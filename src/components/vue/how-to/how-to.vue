@@ -6,7 +6,7 @@
       class="text-xl font-bold text-orange-400 mb-4 text-left cursor-pointer flex items-center"
       @click="toggleQuestions"
     >
-      ¿Cómo usar esta app?
+      {{ en ? 'How to use this app?' : '¿Cómo usar esta app?' }}
       <span
         :class="['ml-2 transition-transform', showQuestions ? 'rotate-90' : '']"
       >
@@ -21,20 +21,47 @@
         <div class="text-white rounded-lg text-left">
           <h2 class="text-xl font-bold mb-2"></h2>
           <ol class="list-decimal list-inside space-y-1">
-  <li>
-    Haz clic en el botón 
-    <label class="text-orange-500">HALLOWEEN ME</label> que se encuentra en la parte superior.
-  </li>
-  <li>Selecciona una foto de tu dispositivo para generar tu contenido temático.</li>
-  <li>Espera unos segundos mientras aplicamos los efectos y generamos tu imagen personalizada.</li>
-  <li>
-    ¡Tu <label class="text-orange-500">HALLOWEEN ME</label> está listo! Ahora puedes publicarla o regenerarla.
-  </li>
-  <li>
-    Al publicar, tu imagen será visible para todo el mundo y podrán compartirla y darle 🎃
-  </li>
-</ol>
-
+            <li>
+              {{ en
+                ? 'Click the button'
+                : 'Haz clic en el botón'
+              }} 
+              <label class="text-orange-500">HALLOWEEN ME</label>
+              {{ en
+                ? 'at the top.'
+                : ' que se encuentra en la parte superior.'
+              }}
+            </li>
+            <li>
+              {{ en
+                ? 'Select a photo from your device to generate your themed content.'
+                : 'Selecciona una foto de tu dispositivo para generar tu contenido temático.'
+              }}
+            </li>
+            <li>
+              {{ en
+                ? 'Wait a few seconds while we apply the effects and generate your personalized image.'
+                : 'Espera unos segundos mientras aplicamos los efectos y generamos tu imagen personalizada.'
+              }}
+            </li>
+            <li>
+              {{ en
+                ? 'Your '
+                : '¡Tu '
+              }} 
+              <label class="text-orange-500">HALLOWEEN ME</label> 
+              {{ en
+                ? 'is ready! You can now publish or regenerate it.'
+                : ' está listo! Ahora puedes publicarla o regenerarla.'
+              }}
+            </li>
+            <li>
+              {{ en
+                ? 'When published, your image will be visible to everyone and they can share it and give it 🎃'
+                : 'Al publicar, tu imagen será visible para todo el mundo y podrán compartirla y darle 🎃'
+              }}
+            </li>
+          </ol>
         </div>
       </div>
     </transition>
@@ -42,40 +69,18 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, defineProps } from "vue";
 
-// Estado para manejar la pregunta activa y si las preguntas están visibles
-const activeQuestion = ref(0);
+// Propiedades que recibe el componente
+const props = defineProps({
+  en: {
+    type: Boolean,
+    required: true,
+  },
+});
+
+// Estado para manejar si las preguntas están visibles
 const showQuestions = ref(false);
-
-// Lista de preguntas y respuestas
-const questions = [
-  {
-    question: "¿Cómo puedo subir una imagen?",
-    answer:
-      'Para subir una imagen, haz clic en el botón "Subir imagen" y selecciona la imagen desde tu dispositivo.',
-  },
-  {
-    question: "¿Puedo usar mis propias imágenes?",
-    answer:
-      "Sí, puedes usar tus propias imágenes siempre que cumplan con los requisitos de formato y tamaño.",
-  },
-  {
-    question: "¿Cómo comparto la imagen generada?",
-    answer:
-      "Una vez que se genera la imagen, podrás compartirla directamente desde la plataforma o descargarla.",
-  },
-  {
-    question: "¿Hay límites en la cantidad de imágenes que puedo generar?",
-    answer:
-      "No hay un límite establecido, pero recomendamos mantener la calidad y el tamaño manejables.",
-  },
-];
-
-// Función para alternar la respuesta visible
-const toggleAnswer = (index) => {
-  activeQuestion.value = activeQuestion.value === index ? null : index; // Alterna entre mostrar y ocultar la respuesta
-};
 
 // Función para mostrar u ocultar las preguntas
 const toggleQuestions = () => {

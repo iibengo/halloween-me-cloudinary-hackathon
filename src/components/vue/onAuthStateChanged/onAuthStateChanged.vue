@@ -14,7 +14,7 @@
   
   onMounted(() => {
     const auth = getAuth(); // Obtener la instancia de autenticación
-        console.log("auth")
+     
     // Escuchar cambios en el estado de autenticación
     onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {

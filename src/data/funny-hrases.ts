@@ -1,5 +1,5 @@
 // Variables para las frases
-export const funnyPhrases: string[][] = [
+export const funnyPhrases_es: string[][] = [
   ["Esta noche, solo acepto", "dulces, no preguntas."],
   ["¿Me asustas?", "¿o eres solo otro lunes?"],
   ["El disfraz de fantasma", "es mi forma de escapar."],
@@ -18,4 +18,25 @@ export const funnyPhrases: string[][] = [
   ["Disfrazado de zombi", "pero solo quiero dormir."],
   ["Este año me disfrazo de adulto responsable", "pero no me lo creo ni yo."],
   ["Si me ves gritar", "es solo el truco del disfraz."],
+];
+// Variables para las frases
+export const funnyPhrases_en: string[][] = [
+  ["Tonight, I only accept", "candy, no questions."],
+  ["You scared me?", "or are you just another Monday?"],
+  ["The ghost costume", "is my way of escaping."],
+  ["Vampires tell me", "I don’t go out enough."],
+  ["Hunting ghosts", "but first, a snack!"],
+  ["If you see a zombie", "offer him a coffee!"],
+  ["I’m a monster", "but I still have style!"],
+  ["Today is my day off", "from being human."],
+  ["This Halloween", "is just another workday."],
+  ["Trick or treat?", "I just want the pizza."],
+  ["I'm the king of Halloween", "but at home they call me 'dad'."],
+  ["I'm not afraid of ghosts", "I'm afraid of my bank account."],
+  ["I'm a monster on the outside", "but a sweetie on the inside."],
+  ["Trick or treat?", "I’m just trying to survive this party."],
+  ["I come from a family of monsters", "but I chose to be an emoji."],
+  ["Dressed as a zombie", "but I just want to sleep."],
+  ["This year I’m dressing up as a responsible adult", "but I don't even believe it myself."],
+  ["If you see me scream", "it’s just the costume’s trick."],
 ];

@@ -1,9 +1,9 @@
 ---
 import { auth } from "@/firebase/firebase-admin";
-import GenerationView from "../components/vue/generation/generation.vue";
+import GenerationView from "@/components/vue/generation/generation.vue";
 const { searchParams } = Astro.url;
 const id = searchParams.get("id");
-import Layout from "../layouts/Layout.astro"
+import Layout from "@/layouts/Layout.astro"
 
 if (id == null) return Astro.redirect("/");
 const { request } = Astro;
@@ -25,5 +25,5 @@ try {
 }
 ---
 <Layout title="HalloweenMe app - Cloudinary Hackatho">
-  <GenerationView client:only userId={userId} isEnglish={true} />
+  <GenerationView client:only userId={userId} isEnglish={false}/>
 </Layout>

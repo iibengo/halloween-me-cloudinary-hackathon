@@ -1,16 +1,29 @@
 <template>
   <div>
     <div v-if="isAnonRef" class="bg-gray-800 p-4 rounded-lg mb-4">
-      <h2 class="text-lg font-bold text-orange-500">Registrate para proteger tu cuenta</h2>
+      <h2 class="text-lg font-bold text-orange-500">
+        {{ isEnglish ? 'Sign up to protect your account' : 'Registrate para proteger tu cuenta' }}
+      </h2>
       <p class="text-gray-300 mb-2">
-        Estás en modo anónimo. Para proteger tu cuenta, considera registrarte. 
+        {{ isEnglish 
+            ? "You're in anonymous mode. To protect your account, consider signing up." 
+            : 'Estás en modo anónimo. Para proteger tu cuenta, considera registrarte.' 
+        }}
       </p>
       <p class="text-gray-300 mb-2">
-       SI ya quienes una cuenta puedes iniciar sesión en <a href="/login" class="text-orange-500"> este link</a> 
+        {{ isEnglish 
+            ? 'If you already have an account, you can log in at ' 
+            : 'SI ya tienes una cuenta puedes iniciar sesión en ' 
+        }} 
+        <a :href="`${getLocalePath('/login')}`" class="text-orange-500"> 
+          {{ isEnglish ? 'this link' : 'este link' }} 
+        </a>
       </p>
       <form @submit.prevent="login">
         <div class="mb-4">
-          <label for="email" class="block text-gray-300">Correo Electrónico:</label>
+          <label for="email" class="block text-gray-300">
+            {{ isEnglish ? 'Email:' : 'Correo Electrónico:' }}
+          </label>
           <input
             type="email"
             id="email"
@@ -20,7 +33,9 @@
           />
         </div>
         <div class="mb-4">
-          <label for="password" class="block text-gray-300">Contraseña:</label>
+          <label for="password" class="block text-gray-300">
+            {{ isEnglish ? 'Password:' : 'Contraseña:' }}
+          </label>
           <input
             type="password"
             id="password"
@@ -33,19 +48,21 @@
           type="submit"
           class="w-full p-2 bg-orange-500 text-white font-bold rounded hover:bg-orange-600 transition duration-300"
         >
-          Registrarse
+          {{ isEnglish ? 'Sign Up' : 'Registrarse' }}
         </button>
       </form>
     </div>
 
     <div>
-      <h3 class="text-xl font-bold text-orange-500">Tus Imágenes</h3>
+      <h3 class="text-xl font-bold text-orange-500">
+        {{ isEnglish ? 'Your Images' : 'Tus Imágenes' }}
+      </h3>
       <ul class="grid grid-cols-2 gap-4 mt-6">
         <li v-for="(image, index) in imagesWithPlaceholders" :key="image.id">
           <div class="relative w-full h-32 bg-gray-900 animate-pulse" v-if="!image.loaded">
             <!-- Placeholder de imagen -->
           </div>
-          <a v-else :href="`/hm?id=${image.id}`">
+          <a v-else :href="getLocalePath(`/hm?id=${image.id}`)">
             <img
               :src="image.cloudinaryUrl"
               style="border-radius: 0.5rem; border: 2.4px solid rgb(249 115 22)"
@@ -58,7 +75,9 @@
           </a>
         </li>
       </ul>
-      <p v-if="loading" class="text-center text-gray-500">Loading images...</p>
+      <p v-if="loading" class="text-center text-gray-500">
+        {{ isEnglish ? 'Loading images...' : 'Cargando imágenes...' }}
+      </p>
     </div>
   </div>
 </template>
@@ -75,6 +94,10 @@ const props = defineProps({
     type: Boolean,
     required: false,
   },
+  isEnglish: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 const email = ref('');
@@ -82,6 +105,7 @@ const password = ref('');
 const images = ref([]);
 const loading = ref(true);
 const isAnonRef = ref(props.isAnon);
+
 // Creamos un array de imágenes con un flag de "loaded"
 const imagesWithPlaceholders = ref(
   Array.from({ length: 4 }, () => ({ id: Math.random(), loaded: false })) // Placeholder inicial con 4 elementos
@@ -121,18 +145,22 @@ const fetchImages = async () => {
 };
 
 const login = async () => {
-  
   await fetch("/api/linkWithCredentials", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email:email.value,
-        password:password.value
-      }),
-    });
-    isAnonRef.value=false
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email: email.value,
+      password: password.value,
+    }),
+  });
+  isAnonRef.value = false;
+};
+
+// Función para obtener la URL local con el prefijo adecuado
+const getLocalePath = (path) => {
+  return props.isEnglish ? path : `/es${path}`;
 };
 
 // Ejecuta la llamada a la API cuando el componente se monta

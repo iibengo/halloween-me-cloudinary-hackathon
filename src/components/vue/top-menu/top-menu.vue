@@ -8,25 +8,19 @@
           v-for="(item, index) in menuItems"
           :key="index"
           class="group"
-          @click="naviegate(item.navigate)"
+          @click="navigate(item.navigate)"
         >
           <a
             href="#"
             class="flex hover:text-white items-center justify-center block p-2 md:p-4 bg-gray-800 rounded-lg text-orange-500 font-bold text-lg transition duration-300 ease-in-out hover:bg-orange-600 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
-            <!-- Contenedor para el icono/imágen y el texto -->
             <div class="flex items-center">
-              <!-- Icono o imagen -->
-            <span v-if="item.img">
-              🎃
-            </span>
+              <span v-if="item.img">🎃</span>
               <i
                 v-else
                 :class="item.icon"
                 class="mr-2 text-base md:text-xl"
-                 @click="naviegate(item.navigate)"
               ></i>
-              <!-- Texto -->
               <span class="leading-tight">{{ item.name }}</span>
             </div>
           </a>
@@ -37,7 +31,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, defineProps } from "vue";
+
+const props = defineProps({
+  isEnglish: {
+    type: Boolean,
+    required: true,
+  },
+});
 
 // Lista de elementos del menú
 const menuItems = ref([
@@ -51,8 +52,10 @@ const menuItems = ref([
   { name: "", icon: "fa fa-user-circle", navigate: "/profile" },
   // Puedes agregar más opciones aquí
 ]);
-const naviegate = (link: string) => {
-  window.location.href = link;
+
+const navigate = (link: string) => {
+  const prefix = props.isEnglish ? "" : "/es";
+  window.location.href = `${prefix}${link}`;
 };
 </script>
 

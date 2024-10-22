@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-orange-900 flex items-center justify-center p-4 mb-8">
     <div class="w-full md:max-w-3xl rounded-lg shadow-2xl bg-black p-8">
-      <TopMenu />
+      <TopMenu :isEnglish="isEnglish" />
       <div class="p-6 space-y-6">
         <h1 class="text-2xl md:text-4xl lg:text-3xl font-extrabold text-orange-500 text-center">
           Generador de imágenes Halloween
@@ -42,6 +42,13 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+const props = defineProps({
+
+  isEnglish: {  // Prop para determinar el idioma
+    type: Boolean,
+    default: false,
+  },
+});
 
 const email = ref('');
 const password = ref('');

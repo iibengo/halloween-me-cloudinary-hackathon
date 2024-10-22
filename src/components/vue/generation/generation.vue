@@ -5,13 +5,13 @@
       class="min-h-screen bg-orange-900 flex items-center justify-center p-4 m-b-8 pt-1"
     >
       <div class="w-full md:max-w-3xl rounded-lg shadow-2xl p-b-12">
-        <TopMenu />
+        <TopMenu  :isEnglish="isEnglish"/>
         <div class="w-full md:max-w-3xl bg-black rounded-lg shadow-2xl p-b-12">
           <div class="p-6 space-y-6">
             <h1
               class="text-4xl md:text-5xl md:text-4xl lg:text-3xl font-extrabold text-orange-500"
             >
-              Generación de imagen
+            {{isEnglish?"Image generation":  "Generación de imagen"}}
             </h1>
 
             <div class="relative flex justify-center items-center">
@@ -45,6 +45,7 @@
                 :internalId="internalId"
                 :likes="likes"
                 @liked="onLiked"
+                :isEnglish="isEnglish"
               />
             </div>
           </div>
@@ -68,7 +69,12 @@ const props = defineProps({
     type: String,
     required: false,
   },
+  isEnglish: {  // Prop para determinar el idioma
+    type: Boolean,
+    default: false,
+  },
 });
+
 const { searchParams } = new URL(window.location.href);
 const internalId = ref(searchParams.get("id") || "");
 

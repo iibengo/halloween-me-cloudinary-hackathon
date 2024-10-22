@@ -4,13 +4,13 @@
     class="min-h-screen bg-orange-900 flex items-center justify-center p-4 m-b-8"
   >
     <div class="w-full md:max-w-3xl rounded-lg shadow-2xl p-b-12">
-      <TopMenu />
+      <TopMenu :isEnglish="isEnglish"/>
       <div class="w-full md:max-w-3xl bg-black rounded-lg shadow-2xl p-b-12">
         <div class="p-6 space-y-6">
           <h1
             class="text-2xl md:text-2xl md:text-4xl lg:text-3xl font-extrabold text-orange-500 text-center"
           >
-            Generador de imagenes Halloween
+            {{ isEnglish ? 'Halloween Image Generator' : 'Generador de imagenes Halloween' }}
           </h1>
           <div
             class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 my-4"
@@ -19,7 +19,7 @@
               @click="onHalloweenMeClick"
               class="flex py-3 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-opacity-50"
             >
-              <span>🦇 Regenerar imagen 🦇</span>
+              <span>{{ isEnglish ? '🦇 Regenerate Image 🦇' : '🦇 Regenerar imagen 🦇' }}</span>
             </button>
 
             <button
@@ -30,7 +30,7 @@
                 class="text-1xl md:text-1xl font-extrabold text-orange-500 text-center flex items-center space-x-2 hover:text-white"
               >
                 <i class="fa fa-paint-brush" aria-hidden="true"></i>
-                <span> Cambiar tema </span>
+                <span>{{ isEnglish ? 'Change Theme' : 'Cambiar tema' }}</span>
               </p>
             </button>
           </div>
@@ -72,6 +72,7 @@
               :showPublic="true"
               @isPublic="clickPublic"
               :isPublic="isPublic"
+              :isEnglish="isEnglish"
             />
           </div>
         </div>
@@ -87,6 +88,7 @@
       :isModalOpen="isModalOpen"
       @closeModal="isModalOpen = false"
       @submitForm="handleSubmit"
+      :isEnglish="isEnglish"
     />
   </div>
 </template>
@@ -103,7 +105,7 @@ import TopMenu from "@/components/vue/top-menu/top-menu.vue";
 import SelectTheme from "@/components/vue/dialog/select-theme.vue";
 import { GenerateImageConfigService } from "@/cloudinary";
 import { type ThemeConfig } from "@/model";
-import { getGenerationServiceWrapper ,UpdateImageServiceWrapper} from "@/service-wrappers";
+import { getGenerationServiceWrapper, UpdateImageServiceWrapper } from "@/service-wrappers";
 
 const { searchParams } = new URL(window.location.href);
 const id = searchParams.get("cid") || "";
@@ -114,7 +116,7 @@ const input2 = ref("");
 const selectedOption = ref("");
 const urlOriginal = ref(getCldImageUrl({ src: id }));
 const isPublic = ref(false);
-const { editPhoto, previewUrl, previewOpacity, isGenerated, dataLoaded,internalId } =
+const { editPhoto, previewUrl, previewOpacity, isGenerated, dataLoaded, internalId } =
   useEditImgService(id, iid, urlOriginal.value);
 const themeConfig = ref<ThemeConfig>({
   input1: "",
@@ -123,36 +125,45 @@ const themeConfig = ref<ThemeConfig>({
   selectedBackground: "fantasmas",
   customBackground: "",
 });
+
+// Props de entrada
 const props = defineProps({
   userId: {
     type: String,
     required: false,
   },
+  isEnglish: {  // Prop para determinar el idioma
+    type: Boolean,
+    default: false,
+  },
 });
-const clickPublic = async ()=>{
-  isPublic.value= !isPublic.value
-  await UpdateImageServiceWrapper.postPublic(iid,isPublic.value);
-}
+
+const clickPublic = async () => {
+  isPublic.value = !isPublic.value;
+  await UpdateImageServiceWrapper.postPublic(iid, isPublic.value);
+};
+
 onMounted(async () => {
   const img = new Image();
   img.src = previewUrl.value;
   const existGeneration = await getGenerationServiceWrapper.getByInternal(iid);
   if (!existGeneration.length) {
-    //   window.location.href = "/";
+     window.location.href = "/";
   }
   previewUrl.value = existGeneration[0].cloudinaryUrl;
   isPublic.value = existGeneration[0].isPublic;
 });
 
 const onHalloweenMeClick = async () => {
-  const config = GenerateImageConfigService.getConfig(themeConfig.value);
+  const config = GenerateImageConfigService.getConfig(themeConfig.value,props.isEnglish);
   await editPhoto(config, props.userId);
 };
+
 const handleSubmit = async (themeConfig: ThemeConfig) => {
-  themeConfig.value = themeConfig;
-  const config = GenerateImageConfigService.getConfig(themeConfig.value);
+  const config = GenerateImageConfigService.getConfig(themeConfig.value,props.isEnglish);
   await editPhoto(config, props.userId);
 };
+
 const openModal = () => {
   isModalOpen.value = true;
 };
