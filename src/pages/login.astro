@@ -1,0 +1,9 @@
+---
+// src/pages/login.astro
+import Layout from "../layouts/Layout.astro"; // Asegúrate de tener un layout si lo usas
+import Loginform from "../components/vue/login/login-form.vue";
+---
+
+<Layout title="Login - Mi Aplicación">
+  <Loginform client:load />
+</Layout>

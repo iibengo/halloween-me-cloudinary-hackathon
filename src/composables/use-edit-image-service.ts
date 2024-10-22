@@ -3,20 +3,20 @@ import { getCldImageUrl } from "astro-cloudinary/helpers";
 import {
   GetImageDimensionsService
 } from "@/cloudinary";
-import { SaveImageServiceWrapper } from "@/service-wrappers";
+import { UpdateImageServiceWrapper } from "@/service-wrappers";
 
-export function useGenerateImgService(
+export function useEditImgService(
   id: string,
+  internalId:string,
   urlOriginal: string,
   retryLimit = 2
 ) {
   const previewUrl = ref(urlOriginal);
   const previewOpacity = ref(1);
-  const isGenerated = ref(false);
-  const dataLoaded = ref(false);
-  const internalId = ref (0)
+  const isGenerated = ref(true);
+  const dataLoaded = ref(true);
 
-  const generatePhoto = async (config:any,userId:string,retryCount = 0) => {
+  const editPhoto = async (config:any,userId:string,retryCount = 0) => {
     isGenerated.value = false;
     dataLoaded.value = false;
 
@@ -36,7 +36,7 @@ export function useGenerateImgService(
       img.src = url;
 
       img.onload = async () => {
-        internalId.value = await SaveImageServiceWrapper.post(id, false, url,userId);
+        await UpdateImageServiceWrapper.post(internalId,url);
         dataLoaded.value = true;
         previewOpacity.value = 1;
         isGenerated.value = true;
@@ -45,7 +45,7 @@ export function useGenerateImgService(
 
       img.onerror = () => {
         if (retryCount < retryLimit) {
-          generatePhoto(config,userId,retryCount + 1);
+          editPhoto(config,userId,retryCount + 1);
         }
       };
     } catch (error) {
@@ -55,12 +55,11 @@ export function useGenerateImgService(
  
   return {
    
-    generatePhoto,
+    editPhoto,
     previewUrl,
     previewOpacity,
     isGenerated,
     dataLoaded,
-    internalId
   };
 }
     

@@ -23,7 +23,7 @@ export const POST: APIRoute = async ({ request }) => {
     const q = query(
       collection(firebaseDb, "hackathonGenerations"),
       where("original", "==", false),
-      limit(10)
+      limit(1000)
     );
     const querySnapshot = await getDocs(q);
     const data = querySnapshot.docs.map((doc) => ({

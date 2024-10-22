@@ -39,6 +39,7 @@
      onMounted(async () => {
        const cookies = document.cookie.split('; ');
        const sessionCookie = cookies.find(cookie => cookie.startsWith('session='));
+
        if (!sessionCookie) {
          await loginAnonymously();
        } else {

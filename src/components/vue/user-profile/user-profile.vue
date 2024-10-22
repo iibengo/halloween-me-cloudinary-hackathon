@@ -1,12 +1,68 @@
 <template>
+  <div>
+    <div v-if="isAnonRef" class="bg-gray-800 p-4 rounded-lg mb-4">
+      <h2 class="text-lg font-bold text-orange-500">
+        {{ isEnglish ? 'Sign up to protect your account' : 'Registrate para proteger tu cuenta' }}
+      </h2>
+      <p class="text-gray-300 mb-2">
+        {{ isEnglish 
+            ? "You're in anonymous mode. To protect your account, consider signing up." 
+            : 'Estás en modo anónimo. Para proteger tu cuenta, considera registrarte.' 
+        }}
+      </p>
+      <p class="text-gray-300 mb-2">
+        {{ isEnglish 
+            ? 'If you already have an account, you can log in at ' 
+            : 'SI ya tienes una cuenta puedes iniciar sesión en ' 
+        }} 
+        <a :href="`${getLocalePath('/login')}`" class="text-orange-500"> 
+          {{ isEnglish ? 'this link' : 'este link' }} 
+        </a>
+      </p>
+      <form @submit.prevent="login">
+        <div class="mb-4">
+          <label for="email" class="block text-gray-300">
+            {{ isEnglish ? 'Email:' : 'Correo Electrónico:' }}
+          </label>
+          <input
+            type="email"
+            id="email"
+            v-model="email"
+            required
+            class="mt-1 block w-full p-2 border border-gray-600 rounded bg-gray-700 text-gray-200"
+          />
+        </div>
+        <div class="mb-4">
+          <label for="password" class="block text-gray-300">
+            {{ isEnglish ? 'Password:' : 'Contraseña:' }}
+          </label>
+          <input
+            type="password"
+            id="password"
+            v-model="password"
+            required
+            class="mt-1 block w-full p-2 border border-gray-600 rounded bg-gray-700 text-gray-200"
+          />
+        </div>
+        <button
+          type="submit"
+          class="w-full p-2 bg-orange-500 text-white font-bold rounded hover:bg-orange-600 transition duration-300"
+        >
+          {{ isEnglish ? 'Sign Up' : 'Registrarse' }}
+        </button>
+      </form>
+    </div>
+
     <div>
-      {{ userId }}
+      <h3 class="text-xl font-bold text-orange-500">
+        {{ isEnglish ? 'Your Images' : 'Tus Imágenes' }}
+      </h3>
       <ul class="grid grid-cols-2 gap-4 mt-6">
         <li v-for="(image, index) in imagesWithPlaceholders" :key="image.id">
           <div class="relative w-full h-32 bg-gray-900 animate-pulse" v-if="!image.loaded">
             <!-- Placeholder de imagen -->
           </div>
-          <a v-else :href="`/hm?id=${image.id}`">
+          <a v-else :href="getLocalePath(`/hm?id=${image.id}`)">
             <img
               :src="image.cloudinaryUrl"
               style="border-radius: 0.5rem; border: 2.4px solid rgb(249 115 22)"
@@ -19,66 +75,100 @@
           </a>
         </li>
       </ul>
-      <p v-if="loading" class="text-center text-gray-500">Loading images...</p>
+      <p v-if="loading" class="text-center text-gray-500">
+        {{ isEnglish ? 'Loading images...' : 'Cargando imágenes...' }}
+      </p>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref, onMounted } from 'vue';
-  const props = defineProps({
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+
+const props = defineProps({
   userId: {
     type: String,
     required: false,
   },
+  isAnon: {
+    type: Boolean,
+    required: false,
+  },
+  isEnglish: {
+    type: Boolean,
+    required: true,
+  },
 });
-  const images = ref([]);
-  const loading = ref(true);
-  
-  // Creamos un array de imágenes con un flag de "loaded"
-  const imagesWithPlaceholders = ref(
-    Array.from({ length: 4 }, () => ({ id: Math.random(), loaded: false })) // Placeholder inicial con 4 elementos
-  );
-  
-  // Función para obtener las imágenes de la API
-  const fetchImages = async () => {
-    try {
-      const response =     await fetch("/api/getUserGeneration", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            userId: props.userId
-          })
-        });
 
-      const data = await response.json();
-  
-      if (data.success) {
-        images.value = data.data.map((image: any) => ({
-          ...image,
-          loaded: true, // Añadimos la propiedad `loaded`
-        }));
-        
-        // Actualiza las imágenes reales en el array con placeholders
-        imagesWithPlaceholders.value = images.value;
-      } else {
-        console.error("Error fetching images:", data.error);
-      }
-    } catch (error) {
-      console.error("Error fetching images:", error);
-    } finally {
-      loading.value = false;
+const email = ref('');
+const password = ref('');
+const images = ref([]);
+const loading = ref(true);
+const isAnonRef = ref(props.isAnon);
+
+// Creamos un array de imágenes con un flag de "loaded"
+const imagesWithPlaceholders = ref(
+  Array.from({ length: 4 }, () => ({ id: Math.random(), loaded: false })) // Placeholder inicial con 4 elementos
+);
+
+// Función para obtener las imágenes de la API
+const fetchImages = async () => {
+  try {
+    const response = await fetch("/api/getUserGeneration", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: props.userId,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      images.value = data.data.map((image: any) => ({
+        ...image,
+        loaded: true, // Añadimos la propiedad `loaded`
+      })).filter(item => item.userId === props.userId || item.isPublic);
+
+      // Actualiza las imágenes reales en el array con placeholders
+      imagesWithPlaceholders.value = images.value;
+    } else {
+      console.error("Error fetching images:", data.error);
     }
-  };
-  
-  // Ejecuta la llamada a la API cuando el componente se monta
-  onMounted(() => {
-    fetchImages();
+  } catch (error) {
+    console.error("Error fetching images:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const login = async () => {
+  await fetch("/api/linkWithCredentials", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email: email.value,
+      password: password.value,
+    }),
   });
-  </script>
-  
-  <style scoped>
-  /* Puedes agregar estilos adicionales para los placeholders si es necesario */
-  </style>
-  
+  isAnonRef.value = false;
+};
+
+// Función para obtener la URL local con el prefijo adecuado
+const getLocalePath = (path) => {
+  return props.isEnglish ? path : `/es${path}`;
+};
+
+// Ejecuta la llamada a la API cuando el componente se monta
+onMounted(() => {
+  fetchImages();
+});
+</script>
+
+<style scoped>
+/* Puedes agregar estilos adicionales para los placeholders si es necesario */
+</style>

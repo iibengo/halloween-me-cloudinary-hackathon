@@ -1,12 +1,12 @@
 ---
 import { auth } from "@/firebase/firebase-admin";
-import GenerationView from "../components/vue/generation/generation.vue";
+import PhotoView from "@/components/vue/photo/photo.vue";
 const { searchParams } = Astro.url;
-const id = searchParams.get("id");
-import Layout from "../layouts/Layout.astro"
+const id = searchParams.get("cid");
+import Layout from "@/layouts/Layout.astro"
+const { request } = Astro;
 
 if (id == null) return Astro.redirect("/");
-const { request } = Astro;
 let decodedClaims;
 let userId = "";
 // Extraer la cookie de sesión
@@ -20,10 +20,10 @@ try {
   decodedClaims = await auth.verifySessionCookie(sessionCookie.split("=")[1]);
   userId = decodedClaims.uid;
 } catch (error) {
-  console.error("Error al verificar la sesión:", error);
-
+   return Astro.redirect("/es/login");
 }
 ---
 <Layout title="HalloweenMe app - Cloudinary Hackatho">
-  <GenerationView client:only userId={userId} isEnglish={true} />
+
+  <PhotoView client:only userId={userId} isEnglish={false}/>
 </Layout>

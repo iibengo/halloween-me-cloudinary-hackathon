@@ -1,6 +1,6 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import ImageList from "../components/vue/image-list/image-list.vue";
+import Layout from "@/layouts/Layout.astro";
+import ImageList from "@/components/vue/image-list/image-list.vue";
 import TopMenu from '@/components/vue/top-menu/top-menu.vue';
 ---
 
@@ -8,15 +8,15 @@ import TopMenu from '@/components/vue/top-menu/top-menu.vue';
   <main class="min-h-screen bg-orange-900 flex flex-col items-center justify-center p-4">
  
     <div class="max-w-md w-full  rounded-lg shadow-2xl overflow-hidden">
-      <TopMenu client:only isEnglish={true}  />
+      <TopMenu client:only isEnglish={false} />
       <div class="p-6 space-y-6 bg-black">
         <h1 class="text-3xl font-extrabold text-orange-500 text-left">
-          Latest generations
+          Últimas generaciones
         </h1>
 
 
         <!-- Renderizamos el componente ImageList que ahora maneja las imágenes -->
-        <ImageList client:only isEnglish={true}  />
+        <ImageList client:only isEnglish={false}  />
 
     
       </div>

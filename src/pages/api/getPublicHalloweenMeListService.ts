@@ -13,8 +13,9 @@ export const GET: APIRoute = async () => {
   try {
     const q = query(
       collection(firebaseDb, "hackathonGenerations"),
-      where("original", "==", false),
-      limit(10),
+        where("original", "==", false),
+        where("isPublic", "==", true),
+        limit(1000),
     );
 
     // Ejecutamos la consulta
