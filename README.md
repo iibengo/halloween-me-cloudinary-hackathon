@@ -1,7 +1,8 @@
 # 🎃 HalloweenMe App - Cloudinary CloudCreate: Spooky AI Hackathon 
 
 ## 📝 Description
-This project was developed for the [Cloudinary CloudCreate: Spooky AI Hackathon ](https://cloudinary.com/blog/cloudinary-cloudcreate-spooky-ai-hackathon), where you can create and share Halloween-themed images. The app uses the Cloudinary API to generate Halloween fun images.
+This project was developed for the [Cloudinary CloudCreate: Spooky AI Hackathon](https://cloudinary.com/blog/cloudinary-cloudcreate-spooky-ai-hackathon), where you can create and share Halloween-themed images. The app uses the Cloudinary API to generate Halloween fun images. 
+This project is a [fork](https://github.com/midudev/cloudinary-hackathon-astro-example/) of an example by midudev.
 
 ## ✨ Features
 - **Thematic Image Generation:** Create unique, personalized Halloween images.
