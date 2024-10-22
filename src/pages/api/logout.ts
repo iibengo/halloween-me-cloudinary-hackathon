@@ -1,4 +1,3 @@
-import { auth } from '../../firebase'; // Importa tu configuración de Firebase
 import type { APIRoute } from 'astro';
 
 export const POST: APIRoute = async ({ request }) => {
@@ -9,7 +8,7 @@ export const POST: APIRoute = async ({ request }) => {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Set-Cookie': `session=; HttpOnly; Path=/; Max-Age=0`, // Eliminar la cookie
+        'Set-Cookie': `session=; HttpOnly; Path=/; Max-Age=0`,
       },
     });
   } catch (error: any) {

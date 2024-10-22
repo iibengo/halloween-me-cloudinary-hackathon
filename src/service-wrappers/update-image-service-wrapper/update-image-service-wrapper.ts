@@ -17,7 +17,7 @@ export class UpdateImageServiceWrapper {
   }
   public static async postLikes(
     id: string,
-    likes: string,
+    likes: number,
   
   ) {
     try {

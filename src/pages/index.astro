@@ -7,12 +7,18 @@ import HowTo from "../components/vue/how-to/how-to.vue";
 
 <Layout title="Generador Halloween - Cloudinary Hackathon">
   <main class="min-h-screen bg-orange-900 flex flex-col items-center justify-center p-4">
-    <div class="max-w-md w-full bg-black rounded-lg shadow-2xl overflow-hidden">
+    <div class="max-w-md w-full bg-black rounded-lg shadow-2xl overflow-hidden relative">
+      <a href="https://github.com/iibengo/halloween-me-cloudinary-hackathon" target="_blank" 
+    class="text-sm absolute top-0 right-0 transform rotate-45 origin-top-right bg-gray-900 py-1 px-4 text-white font-bold shadow-lg hover:bg-orange-600 transition duration-300 ease-in-out"
+    style="top: 105px; right: -33px; width: 200px; text-align: center;"
+  >
+  🎃 Fork me 🎃
+  </a>
       <div class="p-6 space-y-6">
         <h1 class="text-3xl font-extrabold text-orange-500 text-left">
-          Generador de imágenes Halloween
+          Halloween Me App
         </h1>
-
+<h3 class="text-2xl  text-orange-500">Cloudinary CloudCreate: Spooky AI Hackathon</h3>
         <CldUploadWidget
           id="upload-widget"
           uploadPreset="upload-unsigned-images"
@@ -50,6 +56,10 @@ import HowTo from "../components/vue/how-to/how-to.vue";
         <ImageList client:only />
 
         <HowTo client:only />
+        <p class="text-center text-gray-500 text-sm mt-4">
+          This app uses AI powered by  <a class="text-orange-500" href="https://cloudinary.com/blog/cloudinary-cloudcreate-spooky-ai-hackathon" target="_blank">Cloudinary </a> for image generation.
+        </p>
+        
       </div>
     </div>
   </main>

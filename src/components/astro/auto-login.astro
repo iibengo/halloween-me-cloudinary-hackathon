@@ -1,5 +1,8 @@
 ---
 import AnomAuth from "../vue/auth/do-anon-auth.vue";
+
+import OnAuthStateChanged from "../vue/onAuthStateChanged/onAuthStateChanged.vue";
+
 const { request } = Astro;
 const cookies = request.headers.get("cookie") || "";
 const sessionCookie = cookies
@@ -9,10 +12,11 @@ const sessionCookie = cookies
 if (sessionCookie) {
   isLoged=true
 }
+
 ---
 
 <div>
-
+<OnAuthStateChanged/>
   {isLoged ? (
     <span class="hidden"></span>
 

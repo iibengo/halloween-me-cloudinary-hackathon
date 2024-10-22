@@ -3,10 +3,10 @@
     class="bg-gray-900 p-4 pb-2 rounded-lg shadow-lg mb-4 relative mt-8 w-full max-w-md"
   >
     <h2
-      class="text-2xl font-bold text-orange-400 mb-4 text-left cursor-pointer flex items-center"
+      class="text-xl font-bold text-orange-400 mb-4 text-left cursor-pointer flex items-center"
       @click="toggleQuestions"
     >
-      ¿Cómo usar esta herramienta?
+      ¿Cómo usar esta app?
       <span
         :class="['ml-2 transition-transform', showQuestions ? 'rotate-90' : '']"
       >
@@ -21,19 +21,20 @@
         <div class="text-white rounded-lg text-left">
           <h2 class="text-xl font-bold mb-2"></h2>
           <ol class="list-decimal list-inside space-y-1">
-            <li>
-              Pulsa el botón
-              <label class="text-orange-500">HALLOWEEN ME</label> ubicado en la
-              parte superior.
-            </li>
-            <li>Selecciona una foto para generar tu contenido.</li>
-            <li>Espera unos segundos mientras procesamos tu imagen.</li>
-            <li>
-              ¡Todo listo! Ahora tienes tu
-              <label class="text-orange-500">HALLOWEEN ME</label> listo para
-              compartir.
-            </li>
-          </ol>
+  <li>
+    Haz clic en el botón 
+    <label class="text-orange-500">HALLOWEEN ME</label> que se encuentra en la parte superior.
+  </li>
+  <li>Selecciona una foto de tu dispositivo para generar tu contenido temático.</li>
+  <li>Espera unos segundos mientras aplicamos los efectos y generamos tu imagen personalizada.</li>
+  <li>
+    ¡Tu <label class="text-orange-500">HALLOWEEN ME</label> está listo! Ahora puedes publicarla o regenerarla.
+  </li>
+  <li>
+    Al publicar, tu imagen será visible para todo el mundo y podrán compartirla y darle 🎃
+  </li>
+</ol>
+
         </div>
       </div>
     </transition>

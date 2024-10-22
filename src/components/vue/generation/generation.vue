@@ -11,7 +11,7 @@
             <h1
               class="text-4xl md:text-5xl md:text-4xl lg:text-3xl font-extrabold text-orange-500"
             >
-              Generación de imagen Halloween Me
+              Generación de imagen
             </h1>
 
             <div class="relative flex justify-center items-center">

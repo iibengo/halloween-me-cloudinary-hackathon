@@ -6,6 +6,7 @@ import { auth } from "@/firebase";
 const { request } = Astro;
 let decodedClaims;
 let userId = "";
+let isAnon = false;
 // Extraer la cookie de sesión
 const cookies = request.headers.get("cookie") || "";
 const sessionCookie = cookies
@@ -16,6 +17,8 @@ try {
   // Verificar la sesión del usuario con Firebase Admin
   decodedClaims = await auth.verifySessionCookie(sessionCookie.split("=")[1]);
   userId = decodedClaims.uid;
+  isAnon = decodedClaims.provider_id === "anonymous"
+  console.log(decodedClaims)
 } catch (error) {
   console.error("Error al verificar la sesión:", error);
 
@@ -34,7 +37,7 @@ try {
         </h1>
 
         <!-- Renderizamos el componente ImageList que ahora maneja las imágenes -->
-        <UserProfile client:only userId={userId} />
+        <UserProfile client:only userId={userId} isAnon={isAnon}/>
       </div>
     </div>
   </main>
